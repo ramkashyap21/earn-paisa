@@ -5,6 +5,7 @@
   <title>Earn Paisa | Trusted Online Earning Platform</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Earn Paisa is a trusted online earning platform. Complete tasks, earn rewards, and withdraw easily.">
+
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     body{
@@ -27,10 +28,7 @@
       text-align:center;
       background:#ffffff;
     }
-    .hero h2{
-      font-size:26px;
-      margin-bottom:15px;
-    }
+    .hero h2{font-size:26px;margin-bottom:15px}
     .hero p{
       max-width:600px;
       margin:0 auto 25px;
@@ -44,6 +42,8 @@
       border-radius:8px;
       text-decoration:none;
       font-weight:600;
+      border:none;
+      cursor:pointer;
     }
 
     .section{
@@ -57,7 +57,7 @@
       font-size:22px;
     }
 
-    .features{
+    .features,.steps{
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
       gap:20px;
@@ -69,17 +69,6 @@
       box-shadow:0 4px 12px rgba(0,0,0,.08);
       text-align:center;
     }
-    .card h4{
-      margin-bottom:10px;
-      color:#0f172a;
-    }
-
-    .steps{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-      gap:20px;
-    }
-
     footer{
       background:#0f172a;
       color:#ccc;
@@ -90,6 +79,7 @@
     }
   </style>
 </head>
+
 <body>
 
 <header>
@@ -99,60 +89,63 @@
 
 <section class="hero">
   <h2>Earn Money Online from Your Mobile</h2>
-  <p>
-    Join Earn Paisa and start earning by completing simple tasks.
-    Fast tracking, transparent system, and secure withdrawals.
-  </p>
-  <a href="#" class="btn">Get Started</a>
+  <p>Join Earn Paisa and start earning by completing simple tasks.</p>
+  <a href="dashboard.html" class="btn">Get Started</a>
 </section>
 
 <section class="section">
   <h3>Why Choose Earn Paisa?</h3>
   <div class="features">
-    <div class="card">
-      <h4>100% Transparent</h4>
-      <p>No fake promises. Clear earning rules and tracking.</p>
-    </div>
-    <div class="card">
-      <h4>Fast Earnings</h4>
-      <p>Complete tasks and see balance update instantly.</p>
-    </div>
-    <div class="card">
-      <h4>Mobile Friendly</h4>
-      <p>Optimized for Android and all mobile devices.</p>
-    </div>
-    <div class="card">
-      <h4>Secure System</h4>
-      <p>User data protection and safe account handling.</p>
-    </div>
+    <div class="card"><h4>100% Transparent</h4><p>No fake promises.</p></div>
+    <div class="card"><h4>Fast Earnings</h4><p>Instant balance update.</p></div>
+    <div class="card"><h4>Mobile Friendly</h4><p>Android optimized.</p></div>
+    <div class="card"><h4>Secure System</h4><p>Safe user data.</p></div>
   </div>
 </section>
 
 <section class="section">
   <h3>How It Works</h3>
   <div class="steps">
-    <div class="card">
-      <h4>1. Create Account</h4>
-      <p>Sign up using your basic details.</p>
-    </div>
-    <div class="card">
-      <h4>2. Complete Tasks</h4>
-      <p>Do simple online tasks and offers.</p>
-    </div>
-    <div class="card">
-      <h4>3. Earn Paisa</h4>
-      <p>Your earnings are added to your wallet.</p>
-    </div>
-    <div class="card">
-      <h4>4. Withdraw</h4>
-      <p>Withdraw your earnings easily.</p>
-    </div>
+    <div class="card"><h4>1. Create Account</h4></div>
+    <div class="card"><h4>2. Complete Tasks</h4></div>
+    <div class="card"><h4>3. Earn Paisa</h4></div>
+    <div class="card"><h4>4. Withdraw</h4></div>
   </div>
 </section>
+
+<div style="text-align:center;margin-bottom:30px;">
+  <button class="btn" onclick="logout()">Logout</button>
+</div>
 
 <footer>
   © 2026 Earn Paisa. All rights reserved.
 </footer>
 
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
+    authDomain: "paisaeran-43a70.firebaseapp.com",
+    projectId: "paisaeran-43a70"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth,(user)=>{
+    if(!user){
+      window.location.href="login.html";
+    }
+  });
+
+  window.logout = function(){
+    signOut(auth).then(()=>{
+      window.location.href="login.html";
+    });
+  }
+</script>
+
 </body>
-      </html>
+</html>
