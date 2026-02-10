@@ -2,60 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Earn Paisa | Trusted Online Earning Platform</title>
+<title>Earn Paisa | Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Earn Paisa is a trusted online earning platform.">
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{
-  font-family:Segoe UI,Arial;
-  background:#f4f6f8;
-  color:#222;
-}
-header{
-  background:#0f172a;
-  color:#fff;
-  padding:20px;
-  text-align:center;
-}
+body{font-family:Arial;background:#f4f6f8;color:#222}
+header{background:#0f172a;color:#fff;padding:20px;text-align:center}
 header h1{color:#22c55e}
-.hero{
-  padding:40px 20px;
-  text-align:center;
-  background:#fff;
-}
-.btn{
-  background:#22c55e;
-  color:#fff;
-  padding:12px 26px;
-  border-radius:8px;
-  border:none;
-  cursor:pointer;
-}
-.section{
-  max-width:1000px;
-  margin:auto;
-  padding:30px 20px;
-}
-.features,.steps{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
-}
-.card{
-  background:#fff;
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 4px 12px rgba(0,0,0,.08);
-  text-align:center;
-}
-footer{
-  background:#0f172a;
-  color:#ccc;
-  text-align:center;
-  padding:20px;
-}
+.section{max-width:1000px;margin:auto;padding:30px 20px}
+.card{background:#fff;padding:20px;border-radius:12px;margin:15px 0;text-align:center}
+.btn{background:#22c55e;color:#fff;padding:12px 26px;border:none;border-radius:8px;cursor:pointer}
+footer{background:#0f172a;color:#ccc;text-align:center;padding:20px;margin-top:40px}
 </style>
 </head>
 
@@ -63,95 +21,80 @@ footer{
 
 <header>
   <h1>Earn Paisa</h1>
-  <p>Trusted Online Earning Platform</p>
+  <p>Dashboard</p>
 </header>
 
-<section class="hero">
-  <h2>Earn Money Online from Your Mobile</h2>
-  <p>Complete tasks & earn real money</p>
-</section>
+<div class="section">
 
-<!-- WALLET -->
-<div style="background:#fff;padding:20px;border-radius:12px;max-width:400px;margin:20px auto;text-align:center">
-  <h3>💰 Wallet Balance</h3>
-  <p id="balance">₹ 0</p>
-</div>
+  <!-- WALLET -->
+  <div class="card">
+    <h3>💰 Wallet Balance</h3>
+    <p id="balance">₹ 0</p>
+  </div>
 
-<!-- TASKS -->
-<div style="max-width:500px;margin:30px auto">
-  <h3>📊 Available Tasks</h3>
-  <div id="tasks"></div>
-</div>
+  <!-- TASKS -->
+  <div class="card">
+    <h3>📊 Available Tasks</h3>
+    <div id="tasks"></div>
+  </div>
 
-<!-- WITHDRAW -->
-<div style="background:#fff;padding:20px;border-radius:12px;max-width:400px;margin:30px auto">
-  <h3>💸 Withdraw</h3>
+  <!-- WITHDRAW -->
+  <div class="card">
+    <h3>💸 Withdraw</h3>
+    <input id="wamount" type="number" placeholder="Amount (₹)"
+      style="width:100%;padding:10px;margin:8px 0">
+    <select id="wmethod" style="width:100%;padding:10px;margin:8px 0">
+      <option value="UPI">UPI</option>
+      <option value="Paytm">Paytm</option>
+      <option value="Bank">Bank Transfer</option>
+    </select>
+    <button class="btn" onclick="requestWithdraw()">Request Withdraw</button>
+  </div>
 
-  <input id="wamount" type="number" placeholder="Amount (₹)"
-  style="width:100%;padding:10px;margin:8px 0">
+  <!-- LOGOUT -->
+  <div style="text-align:center">
+    <button class="btn" onclick="logout()">Logout</button>
+  </div>
 
-  <select id="wmethod" style="width:100%;padding:10px;margin:8px 0">
-    <option value="UPI">UPI</option>
-    <option value="Paytm">Paytm</option>
-    <option value="Bank">Bank Transfer</option>
-  </select>
-
-  <button id="withdrawBtn"
-  style="width:100%;padding:12px;background:#22c55e;border:none;color:#fff;font-weight:bold">
-    Request Withdraw
-  </button>
-</div>
-
-<div style="text-align:center;margin-bottom:30px">
-  <button class="btn" id="logoutBtn">Logout</button>
 </div>
 
 <footer>
 © 2026 Earn Paisa. All rights reserved.
 </footer>
 
-<!-- FIREBASE -->
+<!-- 🔐 AUTH + PROTECT -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc } from
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
   authDomain: "paisaeran-43a70.firebaseapp.com",
+  databaseURL: "https://paisaeran-43a70-default-rtdb.firebaseio.com",
   projectId: "paisaeran-43a70"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
 
-const balanceEl = document.getElementById("balance");
-
-onAuthStateChanged(auth, async(user)=>{
+onAuthStateChanged(auth,(user)=>{
   if(!user){
     location.href="login.html";
-    return;
-  }
-
-  const snap = await getDoc(doc(db,"users",user.uid));
-  if(snap.exists()){
-    balanceEl.innerText = "₹ " + (snap.data().balance || 0);
   }
 });
 
-// logout
-document.getElementById("logoutBtn").onclick = ()=>{
+window.logout = function(){
   signOut(auth).then(()=>{
     location.href="login.html";
   });
 };
 </script>
 
+<!-- SYSTEM FILES -->
+<script type="module" src="wallet.js"></script>
 <script type="module" src="tasks.js"></script>
 <script type="module" src="withdraw.js"></script>
 
 </body>
-</html>
+  </html>
