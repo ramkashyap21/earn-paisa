@@ -151,6 +151,26 @@ onAuthStateChanged(auth, async(user)=>{
 
 <script type="module" src="tasks.js"></script>
 
+  <div style="background:#fff;padding:20px;border-radius:12px;max-width:400px;margin:30px auto">
+  <h3>💸 Withdraw</h3>
+
+  <input id="wamount" type="number" placeholder="Amount (₹)"
+    style="width:100%;padding:10px;margin:8px 0">
+
+  <select id="wmethod" style="width:100%;padding:10px;margin:8px 0">
+    <option value="UPI">UPI</option>
+    <option value="Paytm">Paytm</option>
+    <option value="Bank">Bank Transfer</option>
+  </select>
+
+  <button onclick="requestWithdraw()"
+    style="width:100%;padding:12px;background:#22c55e;border:none;color:#fff;font-weight:bold">
+    Request Withdraw
+  </button>
+</div>
+
+<script type="module" src="withdraw.js"></script>
+
 window.logout = function(){
   signOut(auth).then(()=>{
     location.href="login.html";
