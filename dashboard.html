@@ -1,1 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | Earn Paisa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body{
+      font-family:Arial;
+      background:#f4f6f8;
+      text-align:center;
+      padding:40px;
+    }
+    h1{color:#22c55e}
+    button{
+      padding:10px 20px;
+      background:#ef4444;
+      border:none;
+      color:#fff;
+      border-radius:6px;
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
 
+<h1>Welcome to Earn Paisa Dashboard</h1>
+<p>You are successfully logged in ✅</p>
+<button onclick="logout()">Logout</button>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, signOut, onAuthStateChanged } 
+    from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
+    authDomain: "paisaeran-43a70.firebaseapp.com",
+    projectId: "paisaeran-43a70",
+    appId: "1:856454531468:web:92ab5b407f2def2cb7aea9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, user => {
+    if(!user){
+      window.location.href = "login.html";
+    }
+  });
+
+  window.logout = function(){
+    signOut(auth).then(()=>{
+      window.location.href = "login.html";
+    });
+  }
+</script>
+
+</body>
+</html>
