@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Login | Earn Paisa</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 body{
   font-family:Arial;
@@ -39,6 +40,7 @@ p{text-align:center;font-size:14px}
 a{color:#22c55e;text-decoration:none}
 </style>
 </head>
+
 <body>
 
 <div class="box">
@@ -53,6 +55,57 @@ a{color:#22c55e;text-decoration:none}
   <p id="msg"></p>
 </div>
 
-<script type="module" src="auth.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { 
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
+  authDomain: "paisaeran-43a70.firebaseapp.com",
+  projectId: "paisaeran-43a70"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const msg = document.getElementById("msg");
+
+window.login = function(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  signInWithEmailAndPassword(auth,email,password)
+    .then(()=>{
+      window.location.href="index.html";
+    })
+    .catch(err=>{
+      msg.innerText = err.message;
+    });
+};
+
+window.signup = function(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  createUserWithEmailAndPassword(auth,email,password)
+    .then(()=>{
+      window.location.href="index.html";
+    })
+    .catch(err=>{
+      msg.innerText = err.message;
+    });
+};
+
+onAuthStateChanged(auth,(user)=>{
+  if(user){
+    window.location.href="index.html";
+  }
+});
+</script>
+
 </body>
 </html>
