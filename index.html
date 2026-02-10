@@ -144,6 +144,13 @@ onAuthStateChanged(auth, async(user)=>{
   }
 });
 
+  <div style="max-width:500px;margin:30px auto">
+  <h3>📊 Available Tasks</h3>
+  <div id="tasks"></div>
+</div>
+
+<script type="module" src="tasks.js"></script>
+
 window.logout = function(){
   signOut(auth).then(()=>{
     location.href="login.html";
