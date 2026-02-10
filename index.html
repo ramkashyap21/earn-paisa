@@ -1,83 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Earn Paisa | Trusted Online Earning Platform</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Earn Paisa is a trusted online earning platform. Complete tasks, earn rewards, and withdraw easily.">
+<meta charset="UTF-8">
+<title>Earn Paisa | Trusted Online Earning Platform</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Earn Paisa is a trusted online earning platform.">
 
-  <style>
-    *{box-sizing:border-box;margin:0;padding:0}
-    body{
-      font-family:Segoe UI,Arial,sans-serif;
-      background:#f4f6f8;
-      color:#222;
-      line-height:1.6;
-    }
-    header{
-      background:#0f172a;
-      color:#fff;
-      padding:20px;
-      text-align:center;
-    }
-    header h1{color:#22c55e;font-size:28px}
-    header p{opacity:.9}
-
-    .hero{
-      padding:50px 20px;
-      text-align:center;
-      background:#ffffff;
-    }
-    .hero h2{font-size:26px;margin-bottom:15px}
-    .hero p{
-      max-width:600px;
-      margin:0 auto 25px;
-      color:#555;
-    }
-    .btn{
-      display:inline-block;
-      background:#22c55e;
-      color:#fff;
-      padding:14px 28px;
-      border-radius:8px;
-      text-decoration:none;
-      font-weight:600;
-      border:none;
-      cursor:pointer;
-    }
-
-    .section{
-      padding:40px 20px;
-      max-width:1000px;
-      margin:auto;
-    }
-    .section h3{
-      text-align:center;
-      margin-bottom:30px;
-      font-size:22px;
-    }
-
-    .features,.steps{
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:20px;
-    }
-    .card{
-      background:#fff;
-      padding:20px;
-      border-radius:12px;
-      box-shadow:0 4px 12px rgba(0,0,0,.08);
-      text-align:center;
-    }
-    footer{
-      background:#0f172a;
-      color:#ccc;
-      text-align:center;
-      padding:20px;
-      margin-top:40px;
-      font-size:14px;
-    }
-  </style>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:Segoe UI,Arial;
+  background:#f4f6f8;
+  color:#222;
+}
+header{
+  background:#0f172a;
+  color:#fff;
+  padding:20px;
+  text-align:center;
+}
+header h1{color:#22c55e}
+.hero{
+  padding:40px 20px;
+  text-align:center;
+  background:#fff;
+}
+.btn{
+  background:#22c55e;
+  color:#fff;
+  padding:12px 26px;
+  border-radius:8px;
+  border:none;
+  cursor:pointer;
+}
+.section{
+  max-width:1000px;
+  margin:auto;
+  padding:30px 20px;
+}
+.features,.steps{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+}
+.card{
+  background:#fff;
+  padding:20px;
+  border-radius:12px;
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
+  text-align:center;
+}
+footer{
+  background:#0f172a;
+  color:#ccc;
+  text-align:center;
+  padding:20px;
+}
+</style>
 </head>
 
 <body>
@@ -89,62 +68,87 @@
 
 <section class="hero">
   <h2>Earn Money Online from Your Mobile</h2>
-  <p>Join Earn Paisa and start earning by completing simple tasks.</p>
+  <p>Complete tasks & earn real money</p>
   <a href="dashboard.html" class="btn">Get Started</a>
 </section>
 
 <section class="section">
-  <h3>Why Choose Earn Paisa?</h3>
+  <h3 style="text-align:center">Why Choose Earn Paisa?</h3>
   <div class="features">
-    <div class="card"><h4>100% Transparent</h4><p>No fake promises.</p></div>
-    <div class="card"><h4>Fast Earnings</h4><p>Instant balance update.</p></div>
-    <div class="card"><h4>Mobile Friendly</h4><p>Android optimized.</p></div>
-    <div class="card"><h4>Secure System</h4><p>Safe user data.</p></div>
+    <div class="card">100% Transparent</div>
+    <div class="card">Fast Earnings</div>
+    <div class="card">Mobile Friendly</div>
+    <div class="card">Secure System</div>
   </div>
 </section>
 
 <section class="section">
-  <h3>How It Works</h3>
+  <h3 style="text-align:center">How It Works</h3>
   <div class="steps">
-    <div class="card"><h4>1. Create Account</h4></div>
-    <div class="card"><h4>2. Complete Tasks</h4></div>
-    <div class="card"><h4>3. Earn Paisa</h4></div>
-    <div class="card"><h4>4. Withdraw</h4></div>
+    <div class="card">Create Account</div>
+    <div class="card">Complete Tasks</div>
+    <div class="card">Earn Paisa</div>
+    <div class="card">Withdraw</div>
   </div>
 </section>
 
-<div style="text-align:center;margin-bottom:30px;">
+<!-- WALLET -->
+<div style="background:#fff;padding:20px;border-radius:12px;max-width:400px;margin:20px auto;text-align:center">
+  <h3>💰 Wallet Balance</h3>
+  <p id="balance">₹ 0</p>
+</div>
+
+<div style="text-align:center;margin-bottom:30px">
   <button class="btn" onclick="logout()">Logout</button>
 </div>
 
 <footer>
-  © 2026 Earn Paisa. All rights reserved.
+© 2026 Earn Paisa. All rights reserved.
 </footer>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { 
+  getFirestore, 
+  doc, 
+  getDoc 
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
-    authDomain: "paisaeran-43a70.firebaseapp.com",
-    projectId: "paisaeran-43a70"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
+  authDomain: "paisaeran-43a70.firebaseapp.com",
+  projectId: "paisaeran-43a70"
+};
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-  onAuthStateChanged(auth,(user)=>{
-    if(!user){
-      window.location.href="login.html";
-    }
+const balanceEl = document.getElementById("balance");
+
+onAuthStateChanged(auth, async(user)=>{
+  if(!user){
+    location.href="login.html";
+    return;
+  }
+
+  // 🔥 Wallet load
+  const snap = await getDoc(doc(db,"users",user.uid));
+  if(snap.exists()){
+    balanceEl.innerText = "₹ " + (snap.data().balance || 0);
+  }
+});
+
+window.logout = function(){
+  signOut(auth).then(()=>{
+    location.href="login.html";
   });
-
-  window.logout = function(){
-    signOut(auth).then(()=>{
-      window.location.href="login.html";
-    });
-  };
+};
 </script>
 
 </body>
