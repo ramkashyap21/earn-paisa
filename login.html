@@ -1,1 +1,135 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login | Earn Paisa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body{
+      margin:0;
+      font-family:Arial;
+      background:#0f172a;
+      color:#fff;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
+    }
+    .box{
+      background:#020617;
+      padding:25px;
+      width:100%;
+      max-width:360px;
+      border-radius:12px;
+    }
+    h2{text-align:center;color:#22c55e}
+    input{
+      width:100%;
+      padding:12px;
+      margin:10px 0;
+      border-radius:6px;
+      border:none;
+      outline:none;
+    }
+    button{
+      width:100%;
+      padding:12px;
+      background:#22c55e;
+      border:none;
+      border-radius:6px;
+      font-size:16px;
+      font-weight:bold;
+      cursor:pointer;
+    }
+    .link{
+      text-align:center;
+      margin-top:12px;
+      font-size:14px;
+    }
+    .link span{
+      color:#22c55e;
+      cursor:pointer;
+    }
+    .msg{
+      text-align:center;
+      font-size:14px;
+      margin-top:10px;
+      color:#f87171;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2 id="title">Login</h2>
+
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+
+  <button onclick="login()">Login</button>
+
+  <div class="link">
+    New user? <span onclick="showSignup()">Create account</span>
+  </div>
+
+  <div class="msg" id="msg"></div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { 
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword
+  } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
+    authDomain: "paisaeran-43a70.firebaseapp.com",
+    databaseURL: "https://paisaeran-43a70-default-rtdb.firebaseio.com",
+    projectId: "paisaeran-43a70",
+    storageBucket: "paisaeran-43a70.firebasestorage.app",
+    messagingSenderId: "856454531468",
+    appId: "1:856454531468:web:92ab5b407f2def2cb7aea9"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  window.login = function(){
+    const email = email.value;
+    const password = document.getElementById("password").value;
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        window.location.href = "dashboard.html";
+      })
+      .catch(err => {
+        document.getElementById("msg").innerText = err.message;
+      });
+  }
+
+  window.showSignup = function(){
+    document.getElementById("title").innerText = "Sign Up";
+    document.querySelector("button").innerText = "Create Account";
+    document.querySelector("button").onclick = signup;
+  }
+
+  window.signup = function(){
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        window.location.href = "dashboard.html";
+      })
+      .catch(err => {
+        document.getElementById("msg").innerText = err.message;
+      });
+  }
+</script>
+
+</body>
+</html>
