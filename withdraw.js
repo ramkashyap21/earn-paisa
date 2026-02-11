@@ -40,6 +40,10 @@ onAuthStateChanged(auth, async (user) => {
       balance: balance - amount
     });
 
+    if(amount < 100){
+  alert("Minimum withdraw amount is ₹100");
+  return;
+    }
     // Create withdraw request
     await push(ref(db, "withdrawRequests"), {
       uid: user.uid,
