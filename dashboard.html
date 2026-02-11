@@ -2,98 +2,99 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Earn Paisa | Dashboard</title>
+<title>Dashboard | Earn Paisa</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial}
-body{background:#f4f6f8;color:#222}
+
+body{
+background:#f1f5f9;
+padding-bottom:70px;
+}
 
 /* HEADER */
 header{
-  background:linear-gradient(135deg,#0f172a,#1e293b);
-  padding:30px 20px;
-  text-align:center;
-  color:#fff;
+background:#ffffff;
+padding:20px;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+position:sticky;
+top:0;
+z-index:100;
 }
-header h1{color:#22c55e;font-size:28px}
+
+header h2{
+color:#16a34a;
+}
 
 /* CONTAINER */
-.container{max-width:650px;margin:40px auto;padding:0 15px}
+.container{
+padding:20px;
+max-width:600px;
+margin:auto;
+}
 
 /* CARD */
 .card{
-  background:#fff;
-  padding:25px;
-  margin-bottom:20px;
-  border-radius:16px;
-  box-shadow:0 8px 20px rgba(0,0,0,.05);
-  text-align:center;
+background:#ffffff;
+padding:20px;
+border-radius:16px;
+margin-bottom:20px;
+box-shadow:0 5px 20px rgba(0,0,0,0.05);
 }
 
+/* WALLET */
 .balance{
-  font-size:24px;
-  font-weight:bold;
-  color:#16a34a;
-  margin-top:10px
+font-size:26px;
+font-weight:bold;
+color:#16a34a;
+margin-top:8px;
 }
 
-input,select{
-  width:100%;
-  padding:14px;
-  margin:10px 0;
-  border-radius:10px;
-  border:1px solid #ddd;
-  font-size:16px
-}
-
+/* BUTTON */
 .btn{
-  width:100%;
-  padding:14px;
-  background:#22c55e;
-  border:none;
-  border-radius:12px;
-  color:#fff;
-  font-weight:bold;
-  cursor:pointer
-}
-.btn:hover{background:#16a34a}
-
-footer{
-  background:#0f172a;
-  color:#ccc;
-  text-align:center;
-  padding:20px;
-  margin-top:40px;
-  font-size:14px
+width:100%;
+padding:12px;
+background:#16a34a;
+border:none;
+border-radius:10px;
+color:#fff;
+font-weight:500;
+cursor:pointer;
+margin-top:10px;
 }
 
-/* POPUP */
-#successPopup{
-  position:fixed;
-  top:0;left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.6);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
+/* TASK */
+.task{
+background:#f8fafc;
+padding:12px;
+border-radius:10px;
+margin-top:10px;
 }
 
-.popup-box{
-  background:#fff;
-  padding:30px;
-  border-radius:20px;
-  text-align:center;
-  width:90%;
-  max-width:350px;
-  animation:pop .4s ease;
+/* BOTTOM NAV */
+.bottom-nav{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:#ffffff;
+display:flex;
+justify-content:space-around;
+padding:10px 0;
+box-shadow:0 -2px 10px rgba(0,0,0,0.08);
 }
 
-@keyframes pop{
-  0%{transform:scale(.5);opacity:0}
-  100%{transform:scale(1);opacity:1}
+.nav-item{
+text-align:center;
+font-size:12px;
+color:#64748b;
+cursor:pointer;
+}
+
+.nav-item.active{
+color:#16a34a;
+font-weight:600;
 }
 </style>
 </head>
@@ -101,110 +102,77 @@ footer{
 <body>
 
 <header>
-  <h1>Earn Paisa</h1>
-  <p>Dashboard</p>
+<h2>Earn Paisa</h2>
 </header>
 
 <div class="container">
 
-  <!-- WALLET -->
-  <div class="card">
-    <h3>💰 Wallet Balance</h3>
-    <div class="balance" id="balance">₹ 0</div>
-  </div>
+<!-- WALLET -->
+<div class="card">
+<h3>Wallet Balance</h3>
+<div id="balance" class="balance">₹0</div>
+</div>
 
-  <!-- TASKS -->
-  <div class="card">
-    <h3>📊 Available Tasks</h3>
-    <div id="tasks"></div>
-  </div>
+<!-- TASKS -->
+<div class="card">
+<h3>Available Tasks</h3>
+<div id="tasks"></div>
+</div>
 
-  <!-- WITHDRAW -->
-  <div class="card">
-    <h3>💸 Withdraw</h3>
-    <input id="wamount" type="number" placeholder="Enter Amount (₹)">
-    <select id="wmethod">
-      <option value="UPI">UPI</option>
-      <option value="Paytm">Paytm</option>
-      <option value="Bank">Bank Transfer</option>
-    </select>
-    <button class="btn" onclick="requestWithdraw()">Request Withdraw</button>
+<!-- WITHDRAW -->
+<div class="card">
+<h3>Withdraw</h3>
+<input id="amount" type="number" placeholder="Enter amount"
+style="width:100%;padding:10px;border-radius:8px;border:1px solid #ddd">
+<button class="btn" onclick="withdraw()">Request Withdraw</button>
+</div>
 
-    <a href="withdraw-status.html"
-       style="display:block;margin-top:15px;color:#22c55e;font-weight:bold">
-       View Withdraw Status
-    </a>
-  </div>
-
-  <!-- LOGOUT -->
-  <div class="card">
-    <button class="btn" onclick="logout()">Logout</button>
-  </div>
+<!-- PROFILE -->
+<div class="card">
+<button class="btn" onclick="logout()">Logout</button>
+</div>
 
 </div>
 
-<footer>
-© 2026 Earn Paisa. All rights reserved.
-</footer>
-
-<!-- SUCCESS POPUP -->
-<div id="successPopup">
-  <div class="popup-box">
-    <h2 style="color:#16a34a;">🎉 Reward Added!</h2>
-    <p id="rewardText" style="margin:15px 0;font-size:18px;"></p>
-    <button onclick="closePopup()" 
-      style="padding:10px 25px;background:#22c55e;border:none;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer">
-      Awesome!
-    </button>
-  </div>
+<!-- BOTTOM NAVIGATION -->
+<div class="bottom-nav">
+<div class="nav-item active">Home</div>
+<div class="nav-item" onclick="alert('Coming Soon')">Leaderboard</div>
+<div class="nav-item" onclick="alert('Coming Soon')">Profile</div>
 </div>
 
-<!-- 🔐 AUTH PROTECTION -->
+<!-- AUTH PROTECTION -->
 <script type="module">
 import { initializeApp } from 
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth,onAuthStateChanged,signOut } 
+import { getAuth,onAuthStateChanged,signOut }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
-  authDomain: "paisaeran-43a70.firebaseapp.com",
-  databaseURL: "https://paisaeran-43a70-default-rtdb.firebaseio.com",
-  projectId: "paisaeran-43a70",
-  storageBucket: "paisaeran-43a70.firebasestorage.app",
-  messagingSenderId: "856454531468",
-  appId: "1:856454531468:web:92ab5b407f2def2cb7aea9"
+const firebaseConfig={
+apiKey:"AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
+authDomain:"paisaeran-43a70.firebaseapp.com",
+databaseURL:"https://paisaeran-43a70-default-rtdb.firebaseio.com",
+projectId:"paisaeran-43a70"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
 
 onAuthStateChanged(auth,(user)=>{
-  if(!user){ location.href="login.html"; }
+if(!user){
+location.href="login.html";
+}
 });
 
 window.logout=function(){
-  signOut(auth).then(()=>location.href="login.html");
-};
+signOut(auth).then(()=>location.href="login.html");
+}
 </script>
 
 <!-- SYSTEM FILES -->
 <script type="module" src="wallet.js"></script>
 <script type="module" src="tasks.js"></script>
 <script type="module" src="withdraw.js"></script>
-
-<!-- POPUP SCRIPT -->
-<script>
-function showSuccessPopup(amount){
-  document.getElementById("rewardText").innerText =
-  "₹"+amount+" has been added to your wallet!";
-  document.getElementById("successPopup").style.display="flex";
-}
-
-function closePopup(){
-  document.getElementById("successPopup").style.display="none";
-}
-</script>
 
 </body>
 </html>
