@@ -31,26 +31,66 @@ header h1{color:#22c55e;font-size:28px}
   text-align:center;
 }
 
-.balance{font-size:24px;font-weight:bold;color:#16a34a;margin-top:10px}
+.balance{
+  font-size:24px;
+  font-weight:bold;
+  color:#16a34a;
+  margin-top:10px
+}
 
 input,select{
-  width:100%;padding:14px;margin:10px 0;
-  border-radius:10px;border:1px solid #ddd;font-size:16px
+  width:100%;
+  padding:14px;
+  margin:10px 0;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-size:16px
 }
 
 .btn{
-  width:100%;padding:14px;background:#22c55e;
-  border:none;border-radius:12px;color:#fff;
-  font-weight:bold;cursor:pointer
+  width:100%;
+  padding:14px;
+  background:#22c55e;
+  border:none;
+  border-radius:12px;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer
 }
 .btn:hover{background:#16a34a}
 
 footer{
-  background:#0f172a;color:#ccc;text-align:center;
-  padding:20px;margin-top:40px;font-size:14px
+  background:#0f172a;
+  color:#ccc;
+  text-align:center;
+  padding:20px;
+  margin-top:40px;
+  font-size:14px
 }
 
-/* POPUP ANIMATION */
+/* POPUP */
+#successPopup{
+  position:fixed;
+  top:0;left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+
+.popup-box{
+  background:#fff;
+  padding:30px;
+  border-radius:20px;
+  text-align:center;
+  width:90%;
+  max-width:350px;
+  animation:pop .4s ease;
+}
+
 @keyframes pop{
   0%{transform:scale(.5);opacity:0}
   100%{transform:scale(1);opacity:1}
@@ -67,33 +107,19 @@ footer{
 
 <div class="container">
 
+  <!-- WALLET -->
   <div class="card">
     <h3>💰 Wallet Balance</h3>
     <div class="balance" id="balance">₹ 0</div>
   </div>
 
-  <div class="card">
-    <h3>🏆 Your Level</h3>
-    <h2 id="userLevel">Loading...</h2>
-    <p id="userBadge"></p>
-  </div>
-
-  <div class="card">
-    <h3>🏆 Top Earners Leaderboard</h3>
-    <div id="leaderboardList"></div>
-  </div>
-
+  <!-- TASKS -->
   <div class="card">
     <h3>📊 Available Tasks</h3>
     <div id="tasks"></div>
   </div>
 
-  <div class="card">
-    <h3>🎯 Daily Spin</h3>
-    <button class="btn" onclick="spinNow()">Spin Now</button>
-    <p id="spinStatus" style="margin-top:10px"></p>
-  </div>
-
+  <!-- WITHDRAW -->
   <div class="card">
     <h3>💸 Withdraw</h3>
     <input id="wamount" type="number" placeholder="Enter Amount (₹)">
@@ -103,12 +129,14 @@ footer{
       <option value="Bank">Bank Transfer</option>
     </select>
     <button class="btn" onclick="requestWithdraw()">Request Withdraw</button>
+
     <a href="withdraw-status.html"
        style="display:block;margin-top:15px;color:#22c55e;font-weight:bold">
        View Withdraw Status
     </a>
   </div>
 
+  <!-- LOGOUT -->
   <div class="card">
     <button class="btn" onclick="logout()">Logout</button>
   </div>
@@ -120,49 +148,18 @@ footer{
 </footer>
 
 <!-- SUCCESS POPUP -->
-<div id="successPopup" style="
-position:fixed;
-top:0;left:0;
-width:100%;height:100%;
-background:rgba(0,0,0,0.6);
-display:none;
-align-items:center;
-justify-content:center;
-z-index:9999;
-">
-  <div style="
-  background:#fff;
-  padding:30px;
-  border-radius:20px;
-  text-align:center;
-  width:90%;
-  max-width:350px;
-  animation:pop .4s ease;
-  ">
+<div id="successPopup">
+  <div class="popup-box">
     <h2 style="color:#16a34a;">🎉 Reward Added!</h2>
     <p id="rewardText" style="margin:15px 0;font-size:18px;"></p>
     <button onclick="closePopup()" 
-    style="padding:10px 25px;background:#22c55e;border:none;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer;">
-    Awesome!
+      style="padding:10px 25px;background:#22c55e;border:none;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer">
+      Awesome!
     </button>
   </div>
 </div>
 
-<!-- POPUP SCRIPT -->
-<script>
-function showSuccessPopup(amount){
-  document.getElementById("rewardText").innerText =
-  "₹"+amount+" has been added to your wallet!";
-  document.getElementById("successPopup").style.display="flex";
-}
-
-function closePopup(){
-  document.getElementById("successPopup").style.display="none";
-  location.reload();
-}
-</script>
-
-<!-- AUTH -->
+<!-- 🔐 AUTH PROTECTION -->
 <script type="module">
 import { initializeApp } from 
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -195,9 +192,19 @@ window.logout=function(){
 <script type="module" src="wallet.js"></script>
 <script type="module" src="tasks.js"></script>
 <script type="module" src="withdraw.js"></script>
-<script type="module" src="spin.js"></script>
-<script type="module" src="level.js"></script>
-<script type="module" src="leaderboard.js"></script>
+
+<!-- POPUP SCRIPT -->
+<script>
+function showSuccessPopup(amount){
+  document.getElementById("rewardText").innerText =
+  "₹"+amount+" has been added to your wallet!";
+  document.getElementById("successPopup").style.display="flex";
+}
+
+function closePopup(){
+  document.getElementById("successPopup").style.display="none";
+}
+</script>
 
 </body>
 </html>
