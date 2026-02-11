@@ -2,132 +2,97 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Earn Paisa | Trusted Online Earning Platform</title>
+<title>Earn Paisa | Premium Earning Platform</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Earn Paisa - Complete tasks, earn rewards and withdraw easily.">
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#22c55e">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Segoe UI', Arial, sans-serif;
-}
-
-body{
-  background:#f8fafc;
-  color:#1e293b;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;transition:0.3s}
+body{background:#0f172a;color:#fff}
+body.light{background:#f1f5f9;color:#0f172a}
 
 /* HEADER */
 header{
-  background:linear-gradient(135deg,#0f172a,#1e293b);
-  padding:25px 20px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  color:#fff;
+  padding:20px 30px;
 }
-
-.logo{
-  font-size:22px;
-  font-weight:bold;
-  color:#22c55e;
-}
-
-.nav a{
-  color:#fff;
-  text-decoration:none;
+.logo{font-size:22px;font-weight:bold;color:#22c55e}
+nav a{margin-left:20px;text-decoration:none;color:inherit;font-size:14px}
+.toggle{
   margin-left:15px;
-  font-size:14px;
+  padding:6px 12px;
+  border-radius:20px;
+  border:none;
+  background:#22c55e;
+  color:#fff;
+  cursor:pointer;
 }
 
 /* HERO */
 .hero{
   text-align:center;
-  padding:80px 20px;
-  background:linear-gradient(135deg,#22c55e,#16a34a);
-  color:#fff;
+  padding:100px 20px 60px;
 }
-
-.hero h1{
-  font-size:32px;
-  margin-bottom:15px;
-}
-
-.hero p{
-  font-size:16px;
-  opacity:0.9;
-  margin-bottom:25px;
-}
-
+.hero h1{font-size:38px;margin-bottom:15px}
+.hero p{opacity:.8;margin-bottom:25px}
 .btn{
-  display:inline-block;
-  padding:14px 28px;
-  background:#fff;
-  color:#16a34a;
-  border-radius:30px;
-  font-weight:bold;
+  padding:14px 30px;
+  border-radius:40px;
+  background:#22c55e;
+  color:#fff;
   text-decoration:none;
-  transition:0.3s;
-}
-
-.btn:hover{
-  transform:scale(1.05);
+  font-weight:bold;
 }
 
 /* SECTION */
 .section{
   max-width:1100px;
-  margin:60px auto;
+  margin:80px auto;
   padding:0 20px;
   text-align:center;
 }
 
-.section h2{
-  font-size:26px;
-  margin-bottom:40px;
-}
-
+/* GRID */
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:25px;
+  margin-top:40px;
 }
-
 .card{
-  background:#fff;
+  background:rgba(255,255,255,0.06);
   padding:30px;
   border-radius:20px;
+  backdrop-filter:blur(12px);
+}
+body.light .card{
+  background:#fff;
   box-shadow:0 10px 30px rgba(0,0,0,0.05);
-  transition:0.3s;
 }
 
-.card:hover{
-  transform:translateY(-5px);
+/* STATS */
+.stat{
+  font-size:28px;
+  font-weight:bold;
+  color:#22c55e;
 }
 
-/* HOW IT WORKS */
-.steps{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:20px;
-}
-
-.step{
-  background:#f1f5f9;
-  padding:25px;
-  border-radius:18px;
+/* TESTIMONIAL */
+.testimonial{
+  font-style:italic;
+  opacity:.8;
+  margin-top:20px;
 }
 
 /* FOOTER */
 footer{
-  background:#0f172a;
-  color:#94a3b8;
   text-align:center;
-  padding:30px 20px;
-  margin-top:60px;
-  font-size:14px;
+  padding:40px 20px;
+  opacity:.6;
 }
 </style>
 </head>
@@ -136,65 +101,127 @@ footer{
 
 <header>
   <div class="logo">Earn Paisa</div>
-  <div class="nav">
+  <nav>
     <a href="login.html">Login</a>
     <a href="dashboard.html">Dashboard</a>
-  </div>
+    <button class="toggle" onclick="toggleMode()">Toggle</button>
+  </nav>
 </header>
 
 <section class="hero">
-  <h1>Earn Money Online From Your Mobile</h1>
-  <p>Complete simple tasks and earn real rewards instantly.</p>
-  <a href="login.html" class="btn">Get Started</a>
+  <h1>Earn Money Online Easily</h1>
+  <p>Complete simple tasks & withdraw instantly.</p>
+  <a href="login.html" class="btn">Start Earning</a>
 </section>
 
 <section class="section">
-  <h2>Why Choose Earn Paisa?</h2>
+  <h2>Live Platform Stats</h2>
   <div class="grid">
     <div class="card">
-      <h3>100% Transparent</h3>
-      <p>No fake promises. Clear earning system.</p>
+      <div class="stat" id="users">0</div>
+      <p>Total Users</p>
     </div>
     <div class="card">
-      <h3>Instant Wallet Update</h3>
-      <p>Rewards added immediately after task completion.</p>
+      <div class="stat" id="withdraw">0</div>
+      <p>Total Withdraw</p>
     </div>
     <div class="card">
-      <h3>Fast Withdraw</h3>
-      <p>Quick and secure withdrawal options.</p>
-    </div>
-    <div class="card">
-      <h3>Referral Bonus</h3>
-      <p>Invite friends and earn extra rewards.</p>
+      <div class="stat" id="tasks">0</div>
+      <p>Total Tasks Completed</p>
     </div>
   </div>
 </section>
 
 <section class="section">
-  <h2>How It Works</h2>
-  <div class="steps">
-    <div class="step">
-      <h3>1. Create Account</h3>
-      <p>Sign up using your email.</p>
-    </div>
-    <div class="step">
-      <h3>2. Complete Tasks</h3>
-      <p>Finish simple online activities.</p>
-    </div>
-    <div class="step">
-      <h3>3. Earn Paisa</h3>
-      <p>Get rewards added to wallet.</p>
-    </div>
-    <div class="step">
-      <h3>4. Withdraw</h3>
-      <p>Withdraw earnings easily.</p>
-    </div>
+  <h2>Referral Program</h2>
+  <div class="card">
+    <p>Invite friends and earn extra rewards instantly.</p>
+    <p>Share your referral code and boost your earnings.</p>
+  </div>
+</section>
+
+<section class="section">
+  <h2>What Users Say</h2>
+  <div class="card">
+    <p class="testimonial" id="testimonial">
+      "Best earning platform ever!"
+    </p>
   </div>
 </section>
 
 <footer>
 © 2026 Earn Paisa. All rights reserved.
 </footer>
+
+<!-- FIREBASE REAL STATS -->
+<script type="module">
+import { initializeApp } from 
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, get } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
+  authDomain: "paisaeran-43a70.firebaseapp.com",
+  databaseURL: "https://paisaeran-43a70-default-rtdb.firebaseio.com",
+  projectId: "paisaeran-43a70"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+async function loadStats(){
+  const usersSnap = await get(ref(db,"users"));
+  const withdrawSnap = await get(ref(db,"withdrawRequests"));
+
+  let totalUsers = 0;
+  let totalWithdraw = 0;
+  let totalTasks = 0;
+
+  if(usersSnap.exists()){
+    usersSnap.forEach(u=>{
+      totalUsers++;
+      const data = u.val();
+      if(data.completedTasks){
+        totalTasks += Object.keys(data.completedTasks).length;
+      }
+    });
+  }
+
+  if(withdrawSnap.exists()){
+    withdrawSnap.forEach(w=>{
+      totalWithdraw += w.val().amount || 0;
+    });
+  }
+
+  document.getElementById("users").innerText = totalUsers;
+  document.getElementById("withdraw").innerText = totalWithdraw;
+  document.getElementById("tasks").innerText = totalTasks;
+}
+
+loadStats();
+</script>
+
+<script>
+// Dark Mode
+function toggleMode(){
+  document.body.classList.toggle("light");
+}
+
+// Testimonial rotation
+const testimonials = [
+  "Best earning platform ever!",
+  "I earned my first ₹500 easily.",
+  "Simple tasks and fast withdraw.",
+  "Referral system is amazing!"
+];
+
+let i = 0;
+setInterval(()=>{
+  i = (i+1)%testimonials.length;
+  document.getElementById("testimonial").innerText = testimonials[i];
+},3000);
+</script>
 
 </body>
 </html>
