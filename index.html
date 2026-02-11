@@ -12,72 +12,31 @@
 body{background:#0f172a;color:#fff;transition:.3s}
 body.light{background:#f1f5f9;color:#0f172a}
 
-/* HEADER */
-header{
-display:flex;justify-content:space-between;align-items:center;
-padding:20px 30px;
-}
+header{display:flex;justify-content:space-between;align-items:center;padding:20px 30px}
 .logo{font-size:22px;font-weight:bold;color:#22c55e}
 nav a{margin-left:20px;text-decoration:none;color:inherit;font-size:14px}
-.toggle{
-margin-left:15px;padding:6px 14px;border-radius:20px;border:none;
-background:#22c55e;color:#fff;cursor:pointer;font-weight:bold;
-}
+.toggle{margin-left:15px;padding:6px 14px;border-radius:20px;border:none;background:#22c55e;color:#fff;cursor:pointer}
 
-/* HERO */
 .hero{text-align:center;padding:100px 20px 60px}
 .hero h1{font-size:38px;margin-bottom:15px}
 .hero p{opacity:.8;margin-bottom:25px}
-.btn{
-padding:14px 30px;border-radius:40px;
-background:#22c55e;color:#fff;text-decoration:none;
-font-weight:bold;border:none;cursor:pointer;
-box-shadow:0 0 20px rgba(34,197,94,.5);
-}
-.btn:hover{transform:scale(1.05)}
+.btn{padding:14px 30px;border-radius:40px;background:#22c55e;color:#fff;border:none;cursor:pointer;font-weight:bold}
 
-/* SECTION */
 .section{max-width:1100px;margin:80px auto;padding:0 20px;text-align:center}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:25px;margin-top:40px}
 
-/* GRID */
-.grid{
-display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:25px;margin-top:40px;
-}
-.card{
-background:rgba(255,255,255,0.06);
-padding:30px;border-radius:20px;
-backdrop-filter:blur(12px);
-}
-body.light .card{
-background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.05)
-}
+.card{background:rgba(255,255,255,0.06);padding:30px;border-radius:20px;backdrop-filter:blur(12px)}
+body.light .card{background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.05)}
 
-/* STATS */
 .stat{font-size:28px;font-weight:bold;color:#22c55e}
 
-/* SPIN */
 #spinWheel{
 width:160px;height:160px;border-radius:50%;
-background:conic-gradient(
-#22c55e 0deg 60deg,
-#16a34a 60deg 120deg,
-#15803d 120deg 180deg,
-#22c55e 180deg 240deg,
-#16a34a 240deg 300deg,
-#15803d 300deg 360deg
-);
-margin:20px auto;
-display:flex;align-items:center;justify-content:center;
-font-weight:bold;font-size:18px;
-transition:transform 4s cubic-bezier(.17,.67,.83,.67);
-box-shadow:0 0 25px rgba(34,197,94,.6);
+background:conic-gradient(#22c55e 0 60deg,#16a34a 60 120deg,#15803d 120 180deg,#22c55e 180 240deg,#16a34a 240 300deg,#15803d 300 360deg);
+margin:20px auto;display:flex;align-items:center;justify-content:center;
+font-weight:bold;transition:transform 4s cubic-bezier(.17,.67,.83,.67);
 }
 
-/* TESTIMONIAL */
-.testimonial{font-style:italic;opacity:.8;margin-top:20px}
-
-/* FOOTER */
 footer{text-align:center;padding:40px 20px;opacity:.6}
 </style>
 </head>
@@ -126,45 +85,41 @@ footer{text-align:center;padding:40px 20px;opacity:.6}
 </div>
 </section>
 
-<section class="section">
-<h2>Referral Program</h2>
-<div class="card">
-<p>Invite friends and earn extra rewards instantly.</p>
-</div>
-</section>
-
-<section class="section">
-<h2>What Users Say</h2>
-<div class="card">
-<p class="testimonial" id="testimonial">
-"Best earning platform ever!"
-</p>
-</div>
-</section>
-
 <footer>
 © 2026 Earn Paisa. All rights reserved.
 </footer>
 
+<!-- 🔥 FIREBASE REAL SYSTEM -->
 <script type="module">
-import { initializeApp } from 
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, get } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
-apiKey:"YOUR_KEY",
-authDomain:"YOUR_DOMAIN",
-databaseURL:"YOUR_DB_URL",
-projectId:"YOUR_PROJECT_ID"
+  apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
+  authDomain: "paisaeran-43a70.firebaseapp.com",
+  databaseURL: "https://paisaeran-43a70-default-rtdb.firebaseio.com",
+  projectId: "paisaeran-43a70",
+  storageBucket: "paisaeran-43a70.firebasestorage.app",
+  messagingSenderId: "856454531468",
+  appId: "1:856454531468:web:92ab5b407f2def2cb7aea9"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const auth = getAuth(app);
+
+let currentUser=null;
+
+onAuthStateChanged(auth, async(user)=>{
+if(!user) return;
+currentUser=user;
+loadStats();
+});
 
 async function loadStats(){
-const usersSnap = await get(ref(db,"users"));
-const withdrawSnap = await get(ref(db,"withdrawRequests"));
+const usersSnap=await get(ref(db,"users"));
+const withdrawSnap=await get(ref(db,"withdrawRequests"));
 
 let totalUsers=0,totalWithdraw=0,totalTasks=0;
 
@@ -185,55 +140,54 @@ totalWithdraw+=w.val().amount||0;
 }
 
 document.getElementById("users").innerText=totalUsers;
-document.getElementById("withdraw").innerText="₹"+totalWithdraw.toLocaleString();
+document.getElementById("withdraw").innerText="₹"+totalWithdraw;
 document.getElementById("tasks").innerText=totalTasks;
 }
 
-loadStats();
-</script>
+/* 🎯 REAL DAILY SPIN */
+window.spinNow=async function(){
+if(!currentUser){alert("Login required");return;}
 
-<script>
-// DARK MODE
-function toggleMode(){
-document.body.classList.toggle("light");
+const userRef=ref(db,"users/"+currentUser.uid);
+const snap=await get(userRef);
+
+let balance=0;
+let lastSpin=0;
+
+if(snap.exists()){
+balance=snap.val().balance||0;
+lastSpin=snap.val().lastSpin||0;
 }
 
-// TESTIMONIAL ROTATION
-const testimonials=[
-"Best earning platform ever!",
-"I earned my first ₹500 easily.",
-"Simple tasks and fast withdraw.",
-"Referral system is amazing!"
-];
+const ONE_DAY=24*60*60*1000;
+const now=Date.now();
 
-let i=0;
-setInterval(()=>{
-i=(i+1)%testimonials.length;
-document.getElementById("testimonial").innerText=testimonials[i];
-},3000);
-
-// DAILY SPIN
-function spinNow(){
-let today=new Date().toDateString();
-let lastSpin=localStorage.getItem("lastSpin");
-
-if(lastSpin===today){
-document.getElementById("spinStatus").innerText="You already spun today!";
+if(now-lastSpin<ONE_DAY){
+document.getElementById("spinStatus").innerText="⏳ Already spun today!";
 return;
 }
 
-let rewards=[5,10,20,50,100,200];
-let reward=rewards[Math.floor(Math.random()*rewards.length)];
+const rewards=[5,10,20,50,100];
+const reward=rewards[Math.floor(Math.random()*rewards.length)];
 
 let wheel=document.getElementById("spinWheel");
-let rotate=360*5+Math.floor(Math.random()*360);
+let rotate=1440+Math.floor(Math.random()*360);
 wheel.style.transform="rotate("+rotate+"deg)";
 
-setTimeout(()=>{
-document.getElementById("spinStatus").innerText=
-"Congratulations! You won ₹"+reward;
-localStorage.setItem("lastSpin",today);
+setTimeout(async()=>{
+await update(userRef,{
+balance:balance+reward,
+lastSpin:now
+});
+document.getElementById("spinStatus").innerText="🎉 You won ₹"+reward;
+loadStats();
 },4000);
+};
+</script>
+
+<script>
+function toggleMode(){
+document.body.classList.toggle("light");
 }
 </script>
 
