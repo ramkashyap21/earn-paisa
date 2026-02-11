@@ -6,17 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family: 'Segoe UI', Arial, sans-serif;
-}
-
-body{
-  background:#f4f6f8;
-  color:#222;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial}
+body{background:#f4f6f8;color:#222}
 
 /* HEADER */
 header{
@@ -25,102 +16,38 @@ header{
   text-align:center;
   color:#fff;
 }
-header h1{
-  color:#22c55e;
-  font-size:28px;
-}
-header p{
-  opacity:0.8;
-  margin-top:5px;
-}
+header h1{color:#22c55e;font-size:28px}
 
-/* MAIN SECTION */
-.container{
-  max-width:600px;
-  margin:40px auto;
-  padding:0 15px;
-}
+/* CONTAINER */
+.container{max-width:650px;margin:40px auto;padding:0 15px}
 
-/* CARD STYLE */
+/* CARD */
 .card{
   background:#fff;
   padding:25px;
   margin-bottom:20px;
   border-radius:16px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.05);
+  box-shadow:0 8px 20px rgba(0,0,0,.05);
   text-align:center;
-  transition:0.3s ease;
-}
-.card:hover{
-  transform:translateY(-3px);
 }
 
-/* WALLET */
-.balance{
-  font-size:24px;
-  font-weight:bold;
-  margin-top:10px;
-  color:#16a34a;
+.balance{font-size:24px;font-weight:bold;color:#16a34a;margin-top:10px}
+
+input,select{
+  width:100%;padding:14px;margin:10px 0;
+  border-radius:10px;border:1px solid #ddd;font-size:16px
 }
 
-  <div class="card">
-  <h3>🏆 Top Earners Leaderboard</h3>
-  <div id="leaderboardList"></div>
-</div>
-  
-<div class="card">
-  <h3>🏆 Your Level</h3>
-  <h2 id="userLevel">Loading...</h2>
-  <p id="userBadge" style="font-size:18px;margin-top:5px;"></p>
-</div>
-  
-/* INPUTS */
-input, select{
-  width:100%;
-  padding:14px;
-  margin:10px 0;
-  border-radius:10px;
-  border:1px solid #ddd;
-  font-size:16px;
-  outline:none;
-}
-input:focus, select:focus{
-  border-color:#22c55e;
-}
-
-/* BUTTON */
 .btn{
-  width:100%;
-  padding:14px;
-  background:#22c55e;
-  border:none;
-  border-radius:12px;
-  color:#fff;
-  font-size:16px;
-  font-weight:bold;
-  cursor:pointer;
-  transition:0.3s;
+  width:100%;padding:14px;background:#22c55e;
+  border:none;border-radius:12px;color:#fff;
+  font-weight:bold;cursor:pointer
 }
-.btn:hover{
-  background:#16a34a;
-}
+.btn:hover{background:#16a34a}
 
-/* SMALL BUTTON */
-.btn-small{
-  padding:8px 14px;
-  border-radius:8px;
-  font-size:14px;
-  margin-top:8px;
-}
-
-/* FOOTER */
 footer{
-  background:#0f172a;
-  color:#ccc;
-  text-align:center;
-  padding:20px;
-  margin-top:40px;
-  font-size:14px;
+  background:#0f172a;color:#ccc;text-align:center;
+  padding:20px;margin-top:40px;font-size:14px
 }
 </style>
 </head>
@@ -140,28 +67,44 @@ footer{
     <div class="balance" id="balance">₹ 0</div>
   </div>
 
+  <!-- LEVEL -->
+  <div class="card">
+    <h3>🏆 Your Level</h3>
+    <h2 id="userLevel">Loading...</h2>
+    <p id="userBadge"></p>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div class="card">
+    <h3>🏆 Top Earners Leaderboard</h3>
+    <div id="leaderboardList"></div>
+  </div>
+
   <!-- TASKS -->
   <div class="card">
     <h3>📊 Available Tasks</h3>
     <div id="tasks"></div>
   </div>
 
+  <!-- SPIN -->
+  <div class="card">
+    <h3>🎯 Daily Spin</h3>
+    <button class="btn" onclick="spinNow()">Spin Now</button>
+    <p id="spinStatus" style="margin-top:10px"></p>
+  </div>
+
   <!-- WITHDRAW -->
   <div class="card">
     <h3>💸 Withdraw</h3>
-
     <input id="wamount" type="number" placeholder="Enter Amount (₹)">
-
     <select id="wmethod">
       <option value="UPI">UPI</option>
       <option value="Paytm">Paytm</option>
       <option value="Bank">Bank Transfer</option>
     </select>
-
     <button class="btn" onclick="requestWithdraw()">Request Withdraw</button>
-
-    <a href="withdraw-status.html" 
-       style="display:block;margin-top:15px;color:#22c55e;font-weight:bold;">
+    <a href="withdraw-status.html"
+       style="display:block;margin-top:15px;color:#22c55e;font-weight:bold">
        View Withdraw Status
     </a>
   </div>
@@ -177,10 +120,42 @@ footer{
 © 2026 Earn Paisa. All rights reserved.
 </footer>
 
-<!-- Firebase Scripts (unchanged) -->
+<!-- 🔐 AUTH PROTECTION -->
+<script type="module">
+import { initializeApp } from 
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth,onAuthStateChanged,signOut } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
+  authDomain: "paisaeran-43a70.firebaseapp.com",
+  databaseURL: "https://paisaeran-43a70-default-rtdb.firebaseio.com",
+  projectId: "paisaeran-43a70",
+  storageBucket: "paisaeran-43a70.firebasestorage.app",
+  messagingSenderId: "856454531468",
+  appId: "1:856454531468:web:92ab5b407f2def2cb7aea9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+onAuthStateChanged(auth,(user)=>{
+  if(!user){ location.href="login.html"; }
+});
+
+window.logout=function(){
+  signOut(auth).then(()=>location.href="login.html");
+};
+</script>
+
+<!-- SYSTEM FILES -->
 <script type="module" src="wallet.js"></script>
 <script type="module" src="tasks.js"></script>
 <script type="module" src="withdraw.js"></script>
+<script type="module" src="spin.js"></script>
+<script type="module" src="level.js"></script>
+<script type="module" src="leaderboard.js"></script>
 
 </body>
-      </html>
+</html>
