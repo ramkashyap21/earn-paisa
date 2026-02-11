@@ -49,6 +49,12 @@ footer{
   background:#0f172a;color:#ccc;text-align:center;
   padding:20px;margin-top:40px;font-size:14px
 }
+
+/* POPUP ANIMATION */
+@keyframes pop{
+  0%{transform:scale(.5);opacity:0}
+  100%{transform:scale(1);opacity:1}
+}
 </style>
 </head>
 
@@ -61,39 +67,33 @@ footer{
 
 <div class="container">
 
-  <!-- WALLET -->
   <div class="card">
     <h3>💰 Wallet Balance</h3>
     <div class="balance" id="balance">₹ 0</div>
   </div>
 
-  <!-- LEVEL -->
   <div class="card">
     <h3>🏆 Your Level</h3>
     <h2 id="userLevel">Loading...</h2>
     <p id="userBadge"></p>
   </div>
 
-  <!-- LEADERBOARD -->
   <div class="card">
     <h3>🏆 Top Earners Leaderboard</h3>
     <div id="leaderboardList"></div>
   </div>
 
-  <!-- TASKS -->
   <div class="card">
     <h3>📊 Available Tasks</h3>
     <div id="tasks"></div>
   </div>
 
-  <!-- SPIN -->
   <div class="card">
     <h3>🎯 Daily Spin</h3>
     <button class="btn" onclick="spinNow()">Spin Now</button>
     <p id="spinStatus" style="margin-top:10px"></p>
   </div>
 
-  <!-- WITHDRAW -->
   <div class="card">
     <h3>💸 Withdraw</h3>
     <input id="wamount" type="number" placeholder="Enter Amount (₹)">
@@ -109,7 +109,6 @@ footer{
     </a>
   </div>
 
-  <!-- LOGOUT -->
   <div class="card">
     <button class="btn" onclick="logout()">Logout</button>
   </div>
@@ -120,7 +119,50 @@ footer{
 © 2026 Earn Paisa. All rights reserved.
 </footer>
 
-<!-- 🔐 AUTH PROTECTION -->
+<!-- SUCCESS POPUP -->
+<div id="successPopup" style="
+position:fixed;
+top:0;left:0;
+width:100%;height:100%;
+background:rgba(0,0,0,0.6);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:9999;
+">
+  <div style="
+  background:#fff;
+  padding:30px;
+  border-radius:20px;
+  text-align:center;
+  width:90%;
+  max-width:350px;
+  animation:pop .4s ease;
+  ">
+    <h2 style="color:#16a34a;">🎉 Reward Added!</h2>
+    <p id="rewardText" style="margin:15px 0;font-size:18px;"></p>
+    <button onclick="closePopup()" 
+    style="padding:10px 25px;background:#22c55e;border:none;border-radius:10px;color:#fff;font-weight:bold;cursor:pointer;">
+    Awesome!
+    </button>
+  </div>
+</div>
+
+<!-- POPUP SCRIPT -->
+<script>
+function showSuccessPopup(amount){
+  document.getElementById("rewardText").innerText =
+  "₹"+amount+" has been added to your wallet!";
+  document.getElementById("successPopup").style.display="flex";
+}
+
+function closePopup(){
+  document.getElementById("successPopup").style.display="none";
+  location.reload();
+}
+</script>
+
+<!-- AUTH -->
 <script type="module">
 import { initializeApp } from 
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
