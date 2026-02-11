@@ -6,112 +6,160 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial}
+
 body{
-  font-family:Arial;
-  background:#0f172a;
-  color:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
+background:#f8fafc;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
 }
-.box{
-  background:#020617;
-  padding:25px;
-  width:100%;
-  max-width:360px;
-  border-radius:12px;
+
+.container{
+background:#ffffff;
+width:100%;
+max-width:400px;
+padding:40px;
+border-radius:16px;
+box-shadow:0 8px 30px rgba(0,0,0,0.08);
+text-align:center;
 }
-h2{text-align:center;margin-bottom:15px}
-input,button{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border-radius:6px;
-  border:none;
+
+.logo{
+font-size:22px;
+font-weight:bold;
+color:#16a34a;
+margin-bottom:10px;
 }
-input{background:#111827;color:#fff}
+
+.subtitle{
+color:#64748b;
+font-size:14px;
+margin-bottom:25px;
+}
+
+input{
+width:100%;
+padding:14px;
+margin-bottom:15px;
+border-radius:10px;
+border:1px solid #e2e8f0;
+font-size:14px;
+outline:none;
+transition:0.2s;
+}
+
+input:focus{
+border-color:#16a34a;
+}
+
 button{
-  background:#22c55e;
-  font-weight:bold;
-  cursor:pointer;
+width:100%;
+padding:14px;
+background:#16a34a;
+border:none;
+border-radius:10px;
+color:#fff;
+font-weight:500;
+cursor:pointer;
+font-size:15px;
 }
-p{text-align:center;font-size:14px}
-a{color:#22c55e;text-decoration:none}
+
+button:hover{
+background:#15803d;
+}
+
+.footer-text{
+margin-top:20px;
+font-size:13px;
+color:#94a3b8;
+}
+
+.back{
+position:absolute;
+top:20px;
+left:20px;
+font-size:14px;
+color:#16a34a;
+cursor:pointer;
+}
 </style>
-  <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#22c55e">
 </head>
 
 <body>
 
-<div class="box">
-  <h2>Earn Paisa</h2>
+<div class="back" onclick="location.href='index.html'">← Back</div>
 
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
+<div class="container">
+<div class="logo">Earn Paisa</div>
+<div class="subtitle">Login or create your account</div>
 
-  <button onclick="login()">Login</button>
-  <button onclick="signup()">Create Account</button>
+<input id="email" type="email" placeholder="Email Address">
+<input id="password" type="password" placeholder="Password">
 
-  <p id="msg"></p>
+<button onclick="login()">Continue</button>
+
+<div class="footer-text">
+By continuing, you agree to our Terms & Privacy Policy.
+</div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-  getAuth,
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { initializeApp } from 
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
-  authDomain: "paisaeran-43a70.firebaseapp.com",
-  projectId: "paisaeran-43a70"
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+import { getDatabase, ref, set }
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig={
+apiKey:"AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
+authDomain:"paisaeran-43a70.firebaseapp.com",
+databaseURL:"https://paisaeran-43a70-default-rtdb.firebaseio.com",
+projectId:"paisaeran-43a70"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const msg = document.getElementById("msg");
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getDatabase(app);
 
-window.login = function(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+window.login=async function(){
 
-  signInWithEmailAndPassword(auth,email,password)
-    .then(()=>{
-      window.location.href="index.html";
-    })
-    .catch(err=>{
-      msg.innerText = err.message;
-    });
-};
+const email=document.getElementById("email").value;
+const password=document.getElementById("password").value;
 
-window.signup = function(){
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  createUserWithEmailAndPassword(auth,email,password)
-    .then(()=>{
-      window.location.href="index.html";
-    })
-    .catch(err=>{
-      msg.innerText = err.message;
-    });
-};
-
-onAuthStateChanged(auth,(user)=>{
-  if(user){
-    window.location.href="index.html";
-  }
-});
-  <script>
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
+if(!email || !password){
+alert("Please enter email and password");
+return;
 }
-  </script>
+
+try{
+await signInWithEmailAndPassword(auth,email,password);
+location.href="dashboard.html";
+}catch{
+
+try{
+const userCredential = await createUserWithEmailAndPassword(auth,email,password);
+
+await set(ref(db,"users/"+userCredential.user.uid),{
+balance:0,
+level:1,
+referrals:0,
+createdAt:Date.now()
+});
+
+location.href="dashboard.html";
+}catch(error){
+alert("Login failed. Please try again.");
+}
+
+}
+
+};
+</script>
 
 </body>
 </html>
