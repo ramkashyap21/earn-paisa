@@ -4,156 +4,148 @@
 <meta charset="UTF-8">
 <title>Earn Paisa | Premium Earning Platform</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#22c55e">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;transition:0.3s}
-body{background:#0f172a;color:#fff}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{background:#0f172a;color:#fff;transition:.3s}
 body.light{background:#f1f5f9;color:#0f172a}
 
 /* HEADER */
 header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:20px 30px;
+display:flex;justify-content:space-between;align-items:center;
+padding:20px 30px;
 }
 .logo{font-size:22px;font-weight:bold;color:#22c55e}
 nav a{margin-left:20px;text-decoration:none;color:inherit;font-size:14px}
 .toggle{
-  margin-left:15px;
-  padding:6px 12px;
-  border-radius:20px;
-  border:none;
-  background:#22c55e;
-  color:#fff;
-  cursor:pointer;
+margin-left:15px;padding:6px 14px;border-radius:20px;border:none;
+background:#22c55e;color:#fff;cursor:pointer;font-weight:bold;
 }
 
 /* HERO */
-.hero{
-  text-align:center;
-  padding:100px 20px 60px;
-}
+.hero{text-align:center;padding:100px 20px 60px}
 .hero h1{font-size:38px;margin-bottom:15px}
 .hero p{opacity:.8;margin-bottom:25px}
 .btn{
-  padding:14px 30px;
-  border-radius:40px;
-  background:#22c55e;
-  color:#fff;
-  text-decoration:none;
-  font-weight:bold;
+padding:14px 30px;border-radius:40px;
+background:#22c55e;color:#fff;text-decoration:none;
+font-weight:bold;border:none;cursor:pointer;
+box-shadow:0 0 20px rgba(34,197,94,.5);
 }
+.btn:hover{transform:scale(1.05)}
 
 /* SECTION */
-.section{
-  max-width:1100px;
-  margin:80px auto;
-  padding:0 20px;
-  text-align:center;
-}
+.section{max-width:1100px;margin:80px auto;padding:0 20px;text-align:center}
 
 /* GRID */
 .grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:25px;
-  margin-top:40px;
+display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;margin-top:40px;
 }
 .card{
-  background:rgba(255,255,255,0.06);
-  padding:30px;
-  border-radius:20px;
-  backdrop-filter:blur(12px);
+background:rgba(255,255,255,0.06);
+padding:30px;border-radius:20px;
+backdrop-filter:blur(12px);
 }
 body.light .card{
-  background:#fff;
-  box-shadow:0 10px 30px rgba(0,0,0,0.05);
+background:#fff;box-shadow:0 10px 30px rgba(0,0,0,.05)
 }
 
 /* STATS */
-.stat{
-  font-size:28px;
-  font-weight:bold;
-  color:#22c55e;
+.stat{font-size:28px;font-weight:bold;color:#22c55e}
+
+/* SPIN */
+#spinWheel{
+width:160px;height:160px;border-radius:50%;
+background:conic-gradient(
+#22c55e 0deg 60deg,
+#16a34a 60deg 120deg,
+#15803d 120deg 180deg,
+#22c55e 180deg 240deg,
+#16a34a 240deg 300deg,
+#15803d 300deg 360deg
+);
+margin:20px auto;
+display:flex;align-items:center;justify-content:center;
+font-weight:bold;font-size:18px;
+transition:transform 4s cubic-bezier(.17,.67,.83,.67);
+box-shadow:0 0 25px rgba(34,197,94,.6);
 }
 
 /* TESTIMONIAL */
-.testimonial{
-  font-style:italic;
-  opacity:.8;
-  margin-top:20px;
-}
+.testimonial{font-style:italic;opacity:.8;margin-top:20px}
 
 /* FOOTER */
-footer{
-  text-align:center;
-  padding:40px 20px;
-  opacity:.6;
-}
+footer{text-align:center;padding:40px 20px;opacity:.6}
 </style>
 </head>
 
 <body>
 
 <header>
-  <div class="logo">Earn Paisa</div>
-  <nav>
-    <a href="login.html">Login</a>
-    <a href="dashboard.html">Dashboard</a>
-    <button class="toggle" onclick="toggleMode()">Toggle</button>
-  </nav>
+<div class="logo">Earn Paisa</div>
+<nav>
+<a href="login.html">Login</a>
+<a href="dashboard.html">Dashboard</a>
+<button class="toggle" onclick="toggleMode()">Toggle</button>
+</nav>
 </header>
 
 <section class="hero">
-  <h1>Earn Money Online Easily</h1>
-  <p>Complete simple tasks & withdraw instantly.</p>
-  <a href="login.html" class="btn">Start Earning</a>
+<h1>Earn Money Online Easily</h1>
+<p>Complete simple tasks & withdraw instantly.</p>
+<a href="login.html" class="btn">Start Earning</a>
 </section>
 
 <section class="section">
-  <h2>Live Platform Stats</h2>
-  <div class="grid">
-    <div class="card">
-      <div class="stat" id="users">0</div>
-      <p>Total Users</p>
-    </div>
-    <div class="card">
-      <div class="stat" id="withdraw">0</div>
-      <p>Total Withdraw</p>
-    </div>
-    <div class="card">
-      <div class="stat" id="tasks">0</div>
-      <p>Total Tasks Completed</p>
-    </div>
-  </div>
+<h2>Live Platform Stats</h2>
+<div class="grid">
+<div class="card">
+<div class="stat" id="users">0</div>
+<p>Total Users</p>
+</div>
+<div class="card">
+<div class="stat" id="withdraw">₹0</div>
+<p>Total Withdraw</p>
+</div>
+<div class="card">
+<div class="stat" id="tasks">0</div>
+<p>Total Tasks Completed</p>
+</div>
+</div>
 </section>
 
 <section class="section">
-  <h2>Referral Program</h2>
-  <div class="card">
-    <p>Invite friends and earn extra rewards instantly.</p>
-    <p>Share your referral code and boost your earnings.</p>
-  </div>
+<h2>🎯 Daily Spin & Win</h2>
+<div class="card">
+<div id="spinWheel">SPIN</div>
+<button class="btn" onclick="spinNow()">Spin Now</button>
+<p id="spinStatus" style="margin-top:10px;font-size:14px;"></p>
+</div>
 </section>
 
 <section class="section">
-  <h2>What Users Say</h2>
-  <div class="card">
-    <p class="testimonial" id="testimonial">
-      "Best earning platform ever!"
-    </p>
-  </div>
+<h2>Referral Program</h2>
+<div class="card">
+<p>Invite friends and earn extra rewards instantly.</p>
+</div>
+</section>
+
+<section class="section">
+<h2>What Users Say</h2>
+<div class="card">
+<p class="testimonial" id="testimonial">
+"Best earning platform ever!"
+</p>
+</div>
 </section>
 
 <footer>
 © 2026 Earn Paisa. All rights reserved.
 </footer>
 
-<!-- FIREBASE REAL STATS -->
 <script type="module">
 import { initializeApp } from 
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -161,66 +153,88 @@ import { getDatabase, ref, get }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
-  authDomain: "paisaeran-43a70.firebaseapp.com",
-  databaseURL: "https://paisaeran-43a70-default-rtdb.firebaseio.com",
-  projectId: "paisaeran-43a70"
+apiKey:"YOUR_KEY",
+authDomain:"YOUR_DOMAIN",
+databaseURL:"YOUR_DB_URL",
+projectId:"YOUR_PROJECT_ID"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 async function loadStats(){
-  const usersSnap = await get(ref(db,"users"));
-  const withdrawSnap = await get(ref(db,"withdrawRequests"));
+const usersSnap = await get(ref(db,"users"));
+const withdrawSnap = await get(ref(db,"withdrawRequests"));
 
-  let totalUsers = 0;
-  let totalWithdraw = 0;
-  let totalTasks = 0;
+let totalUsers=0,totalWithdraw=0,totalTasks=0;
 
-  if(usersSnap.exists()){
-    usersSnap.forEach(u=>{
-      totalUsers++;
-      const data = u.val();
-      if(data.completedTasks){
-        totalTasks += Object.keys(data.completedTasks).length;
-      }
-    });
-  }
+if(usersSnap.exists()){
+usersSnap.forEach(u=>{
+totalUsers++;
+const data=u.val();
+if(data.completedTasks){
+totalTasks+=Object.keys(data.completedTasks).length;
+}
+});
+}
 
-  if(withdrawSnap.exists()){
-    withdrawSnap.forEach(w=>{
-      totalWithdraw += w.val().amount || 0;
-    });
-  }
+if(withdrawSnap.exists()){
+withdrawSnap.forEach(w=>{
+totalWithdraw+=w.val().amount||0;
+});
+}
 
-  document.getElementById("users").innerText = totalUsers;
-  document.getElementById("withdraw").innerText = totalWithdraw;
-  document.getElementById("tasks").innerText = totalTasks;
+document.getElementById("users").innerText=totalUsers;
+document.getElementById("withdraw").innerText="₹"+totalWithdraw.toLocaleString();
+document.getElementById("tasks").innerText=totalTasks;
 }
 
 loadStats();
 </script>
 
 <script>
-// Dark Mode
+// DARK MODE
 function toggleMode(){
-  document.body.classList.toggle("light");
+document.body.classList.toggle("light");
 }
 
-// Testimonial rotation
-const testimonials = [
-  "Best earning platform ever!",
-  "I earned my first ₹500 easily.",
-  "Simple tasks and fast withdraw.",
-  "Referral system is amazing!"
+// TESTIMONIAL ROTATION
+const testimonials=[
+"Best earning platform ever!",
+"I earned my first ₹500 easily.",
+"Simple tasks and fast withdraw.",
+"Referral system is amazing!"
 ];
 
-let i = 0;
+let i=0;
 setInterval(()=>{
-  i = (i+1)%testimonials.length;
-  document.getElementById("testimonial").innerText = testimonials[i];
+i=(i+1)%testimonials.length;
+document.getElementById("testimonial").innerText=testimonials[i];
 },3000);
+
+// DAILY SPIN
+function spinNow(){
+let today=new Date().toDateString();
+let lastSpin=localStorage.getItem("lastSpin");
+
+if(lastSpin===today){
+document.getElementById("spinStatus").innerText="You already spun today!";
+return;
+}
+
+let rewards=[5,10,20,50,100,200];
+let reward=rewards[Math.floor(Math.random()*rewards.length)];
+
+let wheel=document.getElementById("spinWheel");
+let rotate=360*5+Math.floor(Math.random()*360);
+wheel.style.transform="rotate("+rotate+"deg)";
+
+setTimeout(()=>{
+document.getElementById("spinStatus").innerText=
+"Congratulations! You won ₹"+reward;
+localStorage.setItem("lastSpin",today);
+},4000);
+}
 </script>
 
 </body>
