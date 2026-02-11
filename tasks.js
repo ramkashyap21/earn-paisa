@@ -1,119 +1,125 @@
 import { initializeApp } from 
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
 import { getAuth } from 
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, get, update } 
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+import { 
+  getDatabase, 
+  ref, 
+  get, 
+  update 
+} from 
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
 
 const firebaseConfig = {
   apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
   authDomain: "paisaeran-43a70.firebaseapp.com",
   databaseURL: "https://paisaeran-43a70-default-rtdb.firebaseio.com",
-  projectId: "paisaeran-43a70"
+  projectId: "paisaeran-43a70",
+  storageBucket: "paisaeran-43a70.firebasestorage.app",
+  messagingSenderId: "856454531468",
+  appId: "1:856454531468:web:92ab5b407f2def2cb7aea9"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-const tasksDiv = document.getElementById("tasks");
+const tasksContainer = document.getElementById("tasks");
 
-auth.onAuthStateChanged(async(user)=>{
+const tasks = [
+  { id:"visit", title:"Visit Website", reward:10 },
+  { id:"download", title:"Download App", reward:20 },
+  { id:"watch", title:"Watch Video", reward:5 }
+];
+
+auth.onAuthStateChanged(async (user)=>{
   if(!user) return;
 
-  const tasksSnap = await get(ref(db,"tasks"));
-  const userSnap = await get(ref(db,"users/"+user.uid));
+  const userRef = ref(db,"users/"+user.uid);
+  const snap = await get(userRef);
+  const userData = snap.exists() ? snap.val() : {};
 
-  if(!tasksSnap.exists()){
-    tasksDiv.innerHTML="No Tasks Available";
-    return;
-  }
+  tasksContainer.innerHTML="";
 
-  const userData = userSnap.val() || {};
-  const completed = userData.completedTasks || {};
-
-  tasksDiv.innerHTML="";
-
-  tasksSnap.forEach(task=>{
-    const data = task.val();
-    const taskId = task.key;
+  tasks.forEach(task=>{
+    const lastTime = userData.tasks?.[task.id] || 0;
+    const now = Date.now();
+    const cooldown = 24*60*60*1000;
 
     const card = document.createElement("div");
-    card.style.margin="15px 0";
+    card.style.marginBottom="15px";
     card.style.padding="15px";
-    card.style.background="#f1f5f9";
+    card.style.background="#f9fafb";
     card.style.borderRadius="12px";
 
-    const title = document.createElement("h4");
-    title.innerText = data.title;
+    let buttonHTML;
 
-    const reward = document.createElement("p");
-    reward.innerText = "Reward: ₹"+data.reward;
-
-    const btn = document.createElement("button");
-    btn.className="btn";
-    btn.innerText="Complete Task";
-
-    const timer = document.createElement("span");
-    timer.style.display="block";
-    timer.style.marginTop="8px";
-    timer.style.fontSize="14px";
-    timer.style.color="#555";
-
-    if(completed[taskId]){
-      const lastTime = completed[taskId];
-      const diff = Date.now() - lastTime;
-      const remaining = 86400000 - diff;
-
-      if(remaining > 0){
-        btn.disabled = true;
-        btn.style.background="#9ca3af";
-
-        startCountdown(timer, remaining);
-      }
+    if(now - lastTime < cooldown){
+      const hoursLeft = Math.ceil((cooldown-(now-lastTime))/(1000*60*60));
+      buttonHTML = `<button disabled style="
+        background:#aaa;
+        color:#fff;
+        padding:10px 15px;
+        border:none;
+        border-radius:8px;
+        margin-top:8px;
+      ">
+      ⏳ Try Again in ${hoursLeft}h
+      </button>`;
+    } else {
+      buttonHTML = `<button onclick="completeTask('${task.id}',${task.reward})"
+        style="
+        background:#22c55e;
+        color:#fff;
+        padding:10px 15px;
+        border:none;
+        border-radius:8px;
+        margin-top:8px;
+        cursor:pointer;
+      ">
+      Complete Task
+      </button>`;
     }
 
-    btn.onclick = async()=>{
-      const userRef = ref(db,"users/"+user.uid);
+    card.innerHTML = `
+      <h4>${task.title}</h4>
+      <p>Reward: ₹${task.reward}</p>
+      ${buttonHTML}
+    `;
 
-      const newBalance = (userData.balance||0) + data.reward;
-
-      await update(userRef,{
-        balance:newBalance,
-        ["completedTasks/"+taskId]: Date.now()
-      });
-
-      alert("₹"+data.reward+" Added Successfully!");
-      location.reload();
-    };
-
-    card.appendChild(title);
-    card.appendChild(reward);
-    card.appendChild(btn);
-    card.appendChild(timer);
-    tasksDiv.appendChild(card);
+    tasksContainer.appendChild(card);
   });
 });
 
-function startCountdown(el, ms){
-  function updateTimer(){
-    if(ms <= 0){
-      el.innerText="";
-      return;
-    }
 
-    let hours = Math.floor(ms/3600000);
-    let minutes = Math.floor((ms%3600000)/60000);
-    let seconds = Math.floor((ms%60000)/1000);
+window.completeTask = async function(taskId,reward){
+  const user = auth.currentUser;
+  if(!user) return;
 
-    el.innerText = "⏳ Try Again in " +
-      String(hours).padStart(2,"0")+":"+
-      String(minutes).padStart(2,"0")+":"+
-      String(seconds).padStart(2,"0");
+  const userRef = ref(db,"users/"+user.uid);
+  const snap = await get(userRef);
 
-    ms -= 1000;
+  let currentBalance = 0;
+  let userData = {};
+
+  if(snap.exists()){
+    userData = snap.val();
+    currentBalance = userData.balance || 0;
   }
 
-  updateTimer();
-  setInterval(updateTimer,1000);
-}
+  const updates = {};
+  updates["balance"] = currentBalance + reward;
+  updates["tasks/"+taskId] = Date.now();
+
+  await update(userRef,updates);
+
+  // 🔥 SUCCESS POPUP CALL
+  if(typeof showSuccessPopup === "function"){
+    showSuccessPopup(reward);
+  }
+
+  location.reload();
+};
