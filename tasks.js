@@ -21,7 +21,7 @@ const auth = getAuth(app);
 
 const tasksContainer = document.getElementById("tasks");
 
-/* 🔥 AUTO SEED */
+/* 🔥 AUTO SEED TASKS */
 async function seedTasksIfEmpty() {
   const snap = await get(ref(db, "tasks"));
   if (!snap.exists()) {
@@ -37,17 +37,24 @@ async function seedTasksIfEmpty() {
 async function loadTasks() {
   await seedTasksIfEmpty();
 
-  const snap = await get(ref(db, "tasks"));
-  if (!snap.exists()) {
-    tasksContainer.innerHTML = "No Tasks Available";
-    return;
-  }
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const tasksSnap = await get(ref(db, "tasks"));
+  const userSnap = await get(ref(db, "users/" + user.uid));
+
+  const completed = userSnap.exists() && userSnap.val().completedTasks
+    ? userSnap.val().completedTasks
+    : {};
 
   tasksContainer.innerHTML = "";
 
-  snap.forEach(child => {
+  tasksSnap.forEach(child => {
     const task = child.val();
     if (!task.active) return;
+
+    const taskId = child.key;
+    const alreadyDone = completed && completed[taskId];
 
     const div = document.createElement("div");
     div.style.margin = "15px 0";
@@ -61,27 +68,34 @@ async function loadTasks() {
       <p>Reward: ₹${task.reward}</p>
       <button style="
         padding:10px 18px;
-        background:#22c55e;
         border:none;
-        color:#fff;
         border-radius:6px;
+        color:#fff;
         cursor:pointer;
-        transition:0.3s;
-      ">Complete Task</button>
+      ">
+      </button>
     `;
 
     const btn = div.querySelector("button");
 
-    btn.onclick = () => completeTask(child.key, task.reward, btn);
+    if (alreadyDone) {
+      btn.innerText = "✔ Already Completed";
+      btn.style.background = "#16a34a";
+      btn.disabled = true;
+    } else {
+      btn.innerText = "Complete Task";
+      btn.style.background = "#22c55e";
+      btn.onclick = () => completeTask(taskId, task.reward, btn);
+    }
 
     tasksContainer.appendChild(div);
   });
 }
 
-/* 💰 COMPLETE TASK WITH ANIMATION */
+/* 💰 COMPLETE TASK */
 async function completeTask(taskId, reward, btn) {
   const user = auth.currentUser;
-  if (!user) return alert("Login required");
+  if (!user) return;
 
   btn.disabled = true;
   btn.innerText = "Processing...";
@@ -89,17 +103,28 @@ async function completeTask(taskId, reward, btn) {
 
   const userRef = ref(db, "users/" + user.uid);
   const snap = await get(userRef);
+
   let balance = 0;
+  let completedTasks = {};
 
   if (snap.exists()) {
     balance = snap.val().balance || 0;
+    completedTasks = snap.val().completedTasks || {};
   }
 
+  if (completedTasks[taskId]) {
+    btn.innerText = "✔ Already Completed";
+    btn.style.background = "#16a34a";
+    return;
+  }
+
+  completedTasks[taskId] = true;
+
   await update(userRef, {
-    balance: balance + reward
+    balance: balance + reward,
+    completedTasks: completedTasks
   });
 
-  // 🎉 SUCCESS ANIMATION
   btn.innerText = "✔ Completed";
   btn.style.background = "#16a34a";
 
@@ -107,7 +132,7 @@ async function completeTask(taskId, reward, btn) {
 
   setTimeout(() => {
     location.reload();
-  }, 1500);
+  }, 1200);
 }
 
 /* 🪙 COIN POPUP */
@@ -138,4 +163,6 @@ function showCoinPopup(amount) {
   }, 1200);
 }
 
-loadTasks();
+auth.onAuthStateChanged(user => {
+  if (user) loadTasks();
+});
