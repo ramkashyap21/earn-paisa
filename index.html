@@ -2,99 +2,151 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>Earn Paisa | Trusted Earning Platform</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Earn Paisa</title>
 
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0f172a">
+<meta name="theme-color" content="#16a34a">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial}
 
 body{
-background:linear-gradient(135deg,#0f172a,#1e293b);
-color:#fff;
-min-height:100vh;
+background:#f8fafc;
+color:#0f172a;
+}
+
+header{
 display:flex;
-flex-direction:column;
+justify-content:space-between;
 align-items:center;
-justify-content:center;
-text-align:center;
-overflow:hidden;
+padding:20px;
+background:#ffffff;
+box-shadow:0 2px 10px rgba(0,0,0,0.05);
+position:sticky;
+top:0;
+z-index:100;
 }
 
-/* Animated Glow */
-h1{
-font-size:38px;
-background:linear-gradient(90deg,#22c55e,#38bdf8);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-animation:glow 2s infinite alternate;
+.logo{
+font-size:20px;
+font-weight:bold;
+color:#16a34a;
 }
 
-@keyframes glow{
-from{text-shadow:0 0 10px #22c55e}
-to{text-shadow:0 0 25px #38bdf8}
-}
-
-p{
-margin-top:10px;
-opacity:.8;
-}
-
-.btn{
-margin-top:30px;
-padding:15px 40px;
-border:none;
-border-radius:50px;
-background:linear-gradient(90deg,#22c55e,#16a34a);
+.nav-btn{
+padding:10px 18px;
+background:#16a34a;
 color:#fff;
-font-size:18px;
+border:none;
+border-radius:8px;
 cursor:pointer;
-box-shadow:0 0 20px rgba(34,197,94,.6);
-transition:.3s;
+font-weight:500;
 }
 
-.btn:hover{
-transform:scale(1.08);
-box-shadow:0 0 30px rgba(34,197,94,1);
+.hero{
+text-align:center;
+padding:80px 20px;
+max-width:900px;
+margin:auto;
 }
 
-/* Floating Coins */
-.coin{
-position:absolute;
-width:20px;
-height:20px;
-background:gold;
-border-radius:50%;
-animation:float 6s linear infinite;
-opacity:.6;
+.hero h1{
+font-size:36px;
+margin-bottom:15px;
 }
 
-@keyframes float{
-0%{transform:translateY(100vh) rotate(0deg)}
-100%{transform:translateY(-100px) rotate(360deg)}
+.hero p{
+color:#64748b;
+font-size:18px;
+margin-bottom:30px;
+}
+
+.cta{
+padding:14px 28px;
+background:#16a34a;
+color:#fff;
+border:none;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+}
+
+.features{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+max-width:1000px;
+margin:60px auto;
+padding:0 20px;
+}
+
+.card{
+background:#ffffff;
+padding:25px;
+border-radius:16px;
+box-shadow:0 5px 20px rgba(0,0,0,0.05);
+text-align:center;
+}
+
+.card h3{
+margin-bottom:10px;
+color:#16a34a;
+}
+
+footer{
+text-align:center;
+padding:30px;
+background:#ffffff;
+color:#94a3b8;
+margin-top:60px;
+font-size:14px;
 }
 </style>
 </head>
 
 <body>
 
-<h1>Earn Paisa</h1>
-<p>India’s Flashy Earning Platform</p>
+<header>
+<div class="logo">Earn Paisa</div>
+<button class="nav-btn" onclick="location.href='login.html'">Login</button>
+</header>
 
-<button class="btn" onclick="location.href='login.html'">
-Start Earning 🚀
-</button>
+<section class="hero">
+<h1>Earn Money Online in a Smart Way</h1>
+<p>Complete simple tasks, grow your level, and withdraw your earnings securely.</p>
+<button class="cta" onclick="location.href='login.html'">Start Earning</button>
+</section>
+
+<section class="features">
+<div class="card">
+<h3>Secure Wallet</h3>
+<p>Your earnings are tracked in real-time with a transparent balance system.</p>
+</div>
+
+<div class="card">
+<h3>Simple Tasks</h3>
+<p>Complete daily tasks and earn rewards instantly in your wallet.</p>
+</div>
+
+<div class="card">
+<h3>Referral Rewards</h3>
+<p>Invite your friends and earn bonus rewards automatically.</p>
+</div>
+
+<div class="card">
+<h3>Professional Platform</h3>
+<p>Built with modern secure technology and scalable architecture.</p>
+</div>
+</section>
+
+<footer>
+© 2026 Earn Paisa. All rights reserved.
+</footer>
 
 <script>
-/* Floating Coins Animation */
-for(let i=0;i<20;i++){
-let coin=document.createElement("div");
-coin.className="coin";
-coin.style.left=Math.random()*100+"vw";
-coin.style.animationDuration=(4+Math.random()*6)+"s";
-document.body.appendChild(coin);
+if ("serviceWorker" in navigator) {
+navigator.serviceWorker.register("sw.js");
 }
 </script>
 
