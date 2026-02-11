@@ -1,1 +1,170 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Earn Paisa | Profile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Arial}
+body{background:#f4f6f8;color:#222}
+
+header{
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  padding:25px;text-align:center;color:#fff;
+}
+header h1{color:#22c55e}
+
+.container{max-width:500px;margin:30px auto;padding:0 15px}
+
+.card{
+  background:#fff;
+  padding:25px;
+  border-radius:16px;
+  box-shadow:0 8px 20px rgba(0,0,0,.05);
+  margin-bottom:20px;
+  text-align:center;
+}
+
+.avatar{
+  width:90px;
+  height:90px;
+  border-radius:50%;
+  background:#22c55e;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:32px;
+  color:#fff;
+  margin:0 auto 15px;
+}
+
+.info{margin:8px 0;font-size:15px}
+
+.balance{
+  font-size:20px;
+  font-weight:bold;
+  color:#16a34a;
+}
+
+.btn{
+  width:100%;
+  padding:12px;
+  background:#22c55e;
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+.btn.logout{
+  background:#ef4444;
+}
+
+footer{
+  text-align:center;
+  padding:20px;
+  font-size:14px;
+  color:#777;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>Profile</h1>
+</header>
+
+<div class="container">
+
+  <div class="card">
+    <div class="avatar" id="avatar">U</div>
+    <div class="info"><strong>Name:</strong> <span id="name">Loading...</span></div>
+    <div class="info"><strong>Email:</strong> <span id="email">Loading...</span></div>
+    <div class="info"><strong>UID:</strong> <span id="uid">Loading...</span></div>
+  </div>
+
+  <div class="card">
+    <div class="info"><strong>Wallet Balance</strong></div>
+    <div class="balance" id="balance">₹0</div>
+  </div>
+
+  <div class="card">
+    <div class="info"><strong>Your Level</strong></div>
+    <div id="level">Loading...</div>
+  </div>
+
+  <div class="card">
+    <button class="btn" onclick="resetPassword()">Reset Password</button>
+    <button class="btn logout" onclick="logout()">Logout</button>
+  </div>
+
+</div>
+
+<footer>
+© 2026 Earn Paisa
+</footer>
+
+<script type="module">
+import { initializeApp } from 
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth,onAuthStateChanged,signOut,sendPasswordResetEmail } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase,ref,get } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
+  authDomain: "paisaeran-43a70.firebaseapp.com",
+  databaseURL: "https://paisaeran-43a70-default-rtdb.firebaseio.com",
+  projectId: "paisaeran-43a70",
+  storageBucket: "paisaeran-43a70.firebasestorage.app",
+  messagingSenderId: "856454531468",
+  appId: "1:856454531468:web:92ab5b407f2def2cb7aea9"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+onAuthStateChanged(auth, async (user)=>{
+  if(!user){
+    location.href="login.html";
+    return;
+  }
+
+  document.getElementById("email").innerText=user.email;
+  document.getElementById("uid").innerText=user.uid;
+  document.getElementById("avatar").innerText=user.email[0].toUpperCase();
+
+  const snap = await get(ref(db,"users/"+user.uid));
+  if(snap.exists()){
+    const data=snap.val();
+    document.getElementById("name").innerText=data.name||"User";
+    document.getElementById("balance").innerText="₹"+(data.balance||0);
+
+    let lvl="Beginner";
+    if(data.balance>=5000) lvl="Pro";
+    else if(data.balance>=2000) lvl="Advanced";
+
+    document.getElementById("level").innerText=lvl;
+  }
+});
+
+window.logout=function(){
+  signOut(auth).then(()=>location.href="login.html");
+}
+
+window.resetPassword=function(){
+  const user=auth.currentUser;
+  sendPasswordResetEmail(auth,user.email)
+  .then(()=>alert("Password reset email sent"))
+}
+</script>
+
+</body>
+</html>
