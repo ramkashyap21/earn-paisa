@@ -1,1 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Withdraw Status | Earn Paisa</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{font-family:Arial;background:#f4f6f8;margin:0}
+header{background:#0f172a;color:#22c55e;padding:20px;text-align:center}
+.card{
+  background:#fff;
+  margin:15px;
+  padding:15px;
+  border-radius:10px;
+  box-shadow:0 2px 10px rgba(0,0,0,.08)
+}
+.status{
+  padding:5px 12px;
+  border-radius:20px;
+  font-size:13px;
+  display:inline-block;
+}
+.pending{background:#facc15}
+.approved{background:#22c55e;color:#fff}
+.rejected{background:#ef4444;color:#fff}
+</style>
+</head>
 
+<body>
+
+<header>
+  <h2>💸 Withdraw Status</h2>
+</header>
+
+<div id="list"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, onValue } from
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
+  authDomain: "paisaeran-43a70.firebaseapp.com",
+  databaseURL: "https://paisaeran-43a70-default-rtdb.firebaseio.com",
+  projectId: "paisaeran-43a70"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const box = document.getElementById("list");
+
+onAuthStateChanged(auth,(user)=>{
+  if(!user){
+    location.href="login.html";
+    return;
+  }
+
+  const refReq = ref(db,"withdrawRequests");
+  onValue(refReq,(snap)=>{
+    box.innerHTML="";
+    snap.forEach(item=>{
+      const r = item.val();
+      if(r.uid !== user.uid) return;
+
+      const div = document.createElement("div");
+      div.className="card";
+      div.innerHTML = `
+        <h4>₹ ${r.amount}</h4>
+        <p>Method: ${r.method}</p>
+        <span class="status ${r.status}">${r.status.toUpperCase()}</span>
+      `;
+      box.appendChild(div);
+    });
+  });
+});
+</script>
+
+</body>
+</html>
