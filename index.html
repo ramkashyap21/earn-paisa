@@ -10,43 +10,40 @@
 <meta name="theme-color" content="#22c55e">
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial;background:#f4f6f8;color:#222}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Segoe UI', Arial, sans-serif;
+}
+
+body{
+  background:linear-gradient(135deg,#f1f5f9,#e2e8f0);
+  color:#1e293b;
+}
+
+/* HEADER */
 header{
-  background:#0f172a;
-  color:#fff;
-  padding:20px;
+  background:linear-gradient(135deg,#0f172a,#1e293b);
+  padding:35px 20px;
   text-align:center;
+  color:#fff;
   position:relative;
+  border-bottom-left-radius:30px;
+  border-bottom-right-radius:30px;
 }
-header h1{color:#22c55e}
-.section{max-width:1000px;margin:auto;padding:30px 20px}
-.card{
-  background:#fff;
-  padding:20px;
-  border-radius:12px;
-  margin:15px 0;
-  text-align:center;
-  box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+header h1{
+  font-size:28px;
+  color:#22c55e;
 }
-.btn{
-  background:#22c55e;
-  color:#fff;
-  padding:12px 26px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  display:block;
-  text-decoration:none;
-  margin-top:10px;
+
+header p{
+  margin-top:6px;
+  opacity:.8;
 }
-footer{
-  background:#0f172a;
-  color:#ccc;
-  text-align:center;
-  padding:20px;
-  margin-top:40px;
-}
+
+/* Notification */
 .notif{
   position:absolute;
   right:20px;
@@ -56,9 +53,89 @@ footer{
 .notif span{
   background:red;
   color:#fff;
-  padding:3px 8px;
+  padding:4px 8px;
   border-radius:20px;
   font-size:12px;
+}
+
+/* CONTAINER */
+.container{
+  max-width:650px;
+  margin:40px auto;
+  padding:0 18px;
+}
+
+/* CARD */
+.card{
+  background:rgba(255,255,255,0.8);
+  backdrop-filter:blur(12px);
+  padding:28px;
+  margin-bottom:22px;
+  border-radius:20px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  text-align:center;
+  transition:0.3s ease;
+}
+.card:hover{
+  transform:translateY(-4px);
+}
+
+/* BALANCE */
+.balance{
+  font-size:26px;
+  font-weight:bold;
+  color:#16a34a;
+  margin-top:10px;
+}
+
+/* INPUT */
+input,select{
+  width:100%;
+  padding:14px;
+  margin:10px 0;
+  border-radius:12px;
+  border:1px solid #cbd5e1;
+  font-size:15px;
+  outline:none;
+  transition:0.3s;
+}
+input:focus,select:focus{
+  border-color:#22c55e;
+}
+
+/* BUTTON */
+.btn{
+  width:100%;
+  padding:14px;
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  border:none;
+  border-radius:14px;
+  color:#fff;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+.btn:hover{
+  transform:scale(1.03);
+}
+
+/* LINK BUTTON */
+.link-btn{
+  display:block;
+  margin-top:15px;
+  color:#22c55e;
+  font-weight:600;
+  text-decoration:none;
+}
+
+/* FOOTER */
+footer{
+  margin-top:40px;
+  padding:20px;
+  text-align:center;
+  font-size:14px;
+  color:#64748b;
 }
 </style>
 </head>
@@ -69,18 +146,17 @@ footer{
   <h1>Earn Paisa</h1>
   <p>Dashboard</p>
 
-  <!-- 🔔 Notification Badge -->
   <div class="notif">
     🔔 <span id="notifCount">0</span>
   </div>
 </header>
 
-<div class="section">
+<div class="container">
 
   <!-- WALLET -->
   <div class="card">
     <h3>💰 Wallet Balance</h3>
-    <p id="balance">₹ 0</p>
+    <div class="balance" id="balance">₹ 0</div>
   </div>
 
   <!-- TASKS -->
@@ -93,32 +169,26 @@ footer{
   <div class="card">
     <h3>💸 Withdraw</h3>
 
-    <input id="wamount" type="number"
-      placeholder="Amount (₹)"
-      style="width:100%;padding:10px;margin:8px 0">
+    <input id="wamount" type="number" placeholder="Enter Amount (₹)">
 
-    <select id="wmethod"
-      style="width:100%;padding:10px;margin:8px 0">
+    <select id="wmethod">
       <option value="UPI">UPI</option>
       <option value="Paytm">Paytm</option>
       <option value="Bank">Bank Transfer</option>
     </select>
 
-    <button class="btn"
-      onclick="requestWithdraw()">
+    <button class="btn" onclick="requestWithdraw()">
       Request Withdraw
     </button>
 
-    <!-- Withdraw Status -->
-    <a href="withdraw-status.html" class="btn">
+    <a href="withdraw-status.html" class="link-btn">
       View Withdraw Status
     </a>
   </div>
 
   <!-- LOGOUT -->
   <div class="card">
-    <button class="btn"
-      onclick="logout()">
+    <button class="btn" onclick="logout()">
       Logout
     </button>
   </div>
@@ -129,7 +199,7 @@ footer{
 © 2026 Earn Paisa. All rights reserved.
 </footer>
 
-<!-- 🔐 AUTH -->
+<!-- AUTH -->
 <script type="module">
 import { initializeApp } from 
 "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
