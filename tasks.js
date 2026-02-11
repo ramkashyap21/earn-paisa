@@ -1,12 +1,9 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { 
-  getDatabase, 
-  ref, 
-  get, 
-  set, 
-  update 
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { initializeApp } from 
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth } from 
+"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, get, update } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
@@ -16,158 +13,107 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
 const auth = getAuth(app);
+const db = getDatabase(app);
 
-const tasksContainer = document.getElementById("tasks");
-const ONE_DAY = 24 * 60 * 60 * 1000;
+const tasksDiv = document.getElementById("tasks");
 
-/* AUTO SEED */
-async function seedTasksIfEmpty() {
-  const snap = await get(ref(db, "tasks"));
-  if (!snap.exists()) {
-    await set(ref(db, "tasks"), {
-      task1: { title: "Visit Website", reward: 10, active: true },
-      task2: { title: "Download App", reward: 20, active: true },
-      task3: { title: "Watch Video", reward: 5, active: true }
-    });
-  }
-}
+auth.onAuthStateChanged(async(user)=>{
+  if(!user) return;
 
-/* LOAD TASKS */
-async function loadTasks() {
-  await seedTasksIfEmpty();
+  const tasksSnap = await get(ref(db,"tasks"));
+  const userSnap = await get(ref(db,"users/"+user.uid));
 
-  const user = auth.currentUser;
-  if (!user) return;
-
-  const tasksSnap = await get(ref(db, "tasks"));
-  const userSnap = await get(ref(db, "users/" + user.uid));
-
-  let completed = {};
-  if (userSnap.exists()) {
-    completed = userSnap.val().completedTasks || {};
+  if(!tasksSnap.exists()){
+    tasksDiv.innerHTML="No Tasks Available";
+    return;
   }
 
-  tasksContainer.innerHTML = "";
+  const userData = userSnap.val() || {};
+  const completed = userData.completedTasks || {};
 
-  tasksSnap.forEach(child => {
-    const task = child.val();
-    if (!task.active) return;
+  tasksDiv.innerHTML="";
 
-    const taskId = child.key;
-    const lastCompleted = completed[taskId];
-    const now = Date.now();
+  tasksSnap.forEach(task=>{
+    const data = task.val();
+    const taskId = task.key;
 
-    let canDoTask = true;
+    const card = document.createElement("div");
+    card.style.margin="15px 0";
+    card.style.padding="15px";
+    card.style.background="#f1f5f9";
+    card.style.borderRadius="12px";
 
-    if (lastCompleted && (now - lastCompleted) < ONE_DAY) {
-      canDoTask = false;
+    const title = document.createElement("h4");
+    title.innerText = data.title;
+
+    const reward = document.createElement("p");
+    reward.innerText = "Reward: ₹"+data.reward;
+
+    const btn = document.createElement("button");
+    btn.className="btn";
+    btn.innerText="Complete Task";
+
+    const timer = document.createElement("span");
+    timer.style.display="block";
+    timer.style.marginTop="8px";
+    timer.style.fontSize="14px";
+    timer.style.color="#555";
+
+    if(completed[taskId]){
+      const lastTime = completed[taskId];
+      const diff = Date.now() - lastTime;
+      const remaining = 86400000 - diff;
+
+      if(remaining > 0){
+        btn.disabled = true;
+        btn.style.background="#9ca3af";
+
+        startCountdown(timer, remaining);
+      }
     }
 
-    const div = document.createElement("div");
-    div.style.margin = "15px 0";
-    div.style.padding = "15px";
-    div.style.background = "#f9fafb";
-    div.style.borderRadius = "10px";
-    div.style.boxShadow = "0 2px 8px rgba(0,0,0,0.05)";
+    btn.onclick = async()=>{
+      const userRef = ref(db,"users/"+user.uid);
 
-    div.innerHTML = `
-      <p style="font-weight:bold">${task.title}</p>
-      <p>Reward: ₹${task.reward}</p>
-      <button style="
-        padding:10px 18px;
-        border:none;
-        border-radius:6px;
-        color:#fff;
-        cursor:pointer;
-      "></button>
-    `;
+      const newBalance = (userData.balance||0) + data.reward;
 
-    const btn = div.querySelector("button");
+      await update(userRef,{
+        balance:newBalance,
+        ["completedTasks/"+taskId]: Date.now()
+      });
 
-    if (!canDoTask) {
-      const remaining = ONE_DAY - (now - lastCompleted);
-      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      alert("₹"+data.reward+" Added Successfully!");
+      location.reload();
+    };
 
-      btn.innerText = `⏳ Try Again in ${hours}h`;
-      btn.style.background = "#999";
-      btn.disabled = true;
-    } else {
-      btn.innerText = "Complete Task";
-      btn.style.background = "#22c55e";
-      btn.onclick = () => completeTask(taskId, task.reward, btn);
-    }
-
-    tasksContainer.appendChild(div);
+    card.appendChild(title);
+    card.appendChild(reward);
+    card.appendChild(btn);
+    card.appendChild(timer);
+    tasksDiv.appendChild(card);
   });
-}
-
-/* COMPLETE TASK */
-async function completeTask(taskId, reward, btn) {
-  const user = auth.currentUser;
-  if (!user) return;
-
-  btn.disabled = true;
-  btn.innerText = "Processing...";
-  btn.style.background = "#999";
-
-  const userRef = ref(db, "users/" + user.uid);
-  const snap = await get(userRef);
-
-  let balance = 0;
-  let completedTasks = {};
-
-  if (snap.exists()) {
-    balance = snap.val().balance || 0;
-    completedTasks = snap.val().completedTasks || {};
-  }
-
-  completedTasks[taskId] = Date.now();
-
-  await update(userRef, {
-    balance: balance + reward,
-    completedTasks: completedTasks
-  });
-
-  btn.innerText = "✔ Completed";
-  btn.style.background = "#16a34a";
-
-  showCoinPopup(reward);
-
-  setTimeout(() => {
-    location.reload();
-  }, 1200);
-}
-
-/* COIN POPUP */
-function showCoinPopup(amount) {
-  const popup = document.createElement("div");
-  popup.innerText = "🪙 +₹" + amount;
-  popup.style.position = "fixed";
-  popup.style.top = "50%";
-  popup.style.left = "50%";
-  popup.style.transform = "translate(-50%,-50%) scale(0)";
-  popup.style.background = "#22c55e";
-  popup.style.color = "#fff";
-  popup.style.padding = "20px 40px";
-  popup.style.borderRadius = "15px";
-  popup.style.fontSize = "22px";
-  popup.style.fontWeight = "bold";
-  popup.style.transition = "0.4s";
-  popup.style.zIndex = "9999";
-
-  document.body.appendChild(popup);
-
-  setTimeout(() => {
-    popup.style.transform = "translate(-50%,-50%) scale(1)";
-  }, 50);
-
-  setTimeout(() => {
-    popup.remove();
-  }, 1200);
-}
-
-auth.onAuthStateChanged(user => {
-  if (user) loadTasks();
 });
+
+function startCountdown(el, ms){
+  function updateTimer(){
+    if(ms <= 0){
+      el.innerText="";
+      return;
+    }
+
+    let hours = Math.floor(ms/3600000);
+    let minutes = Math.floor((ms%3600000)/60000);
+    let seconds = Math.floor((ms%60000)/1000);
+
+    el.innerText = "⏳ Try Again in " +
+      String(hours).padStart(2,"0")+":"+
+      String(minutes).padStart(2,"0")+":"+
+      String(seconds).padStart(2,"0");
+
+    ms -= 1000;
+  }
+
+  updateTimer();
+  setInterval(updateTimer,1000);
+}
