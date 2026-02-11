@@ -20,8 +20,9 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 
 const tasksContainer = document.getElementById("tasks");
+const ONE_DAY = 24 * 60 * 60 * 1000;
 
-/* 🔥 AUTO SEED TASKS */
+/* AUTO SEED */
 async function seedTasksIfEmpty() {
   const snap = await get(ref(db, "tasks"));
   if (!snap.exists()) {
@@ -33,7 +34,7 @@ async function seedTasksIfEmpty() {
   }
 }
 
-/* 📊 LOAD TASKS */
+/* LOAD TASKS */
 async function loadTasks() {
   await seedTasksIfEmpty();
 
@@ -43,9 +44,10 @@ async function loadTasks() {
   const tasksSnap = await get(ref(db, "tasks"));
   const userSnap = await get(ref(db, "users/" + user.uid));
 
-  const completed = userSnap.exists() && userSnap.val().completedTasks
-    ? userSnap.val().completedTasks
-    : {};
+  let completed = {};
+  if (userSnap.exists()) {
+    completed = userSnap.val().completedTasks || {};
+  }
 
   tasksContainer.innerHTML = "";
 
@@ -54,7 +56,14 @@ async function loadTasks() {
     if (!task.active) return;
 
     const taskId = child.key;
-    const alreadyDone = completed && completed[taskId];
+    const lastCompleted = completed[taskId];
+    const now = Date.now();
+
+    let canDoTask = true;
+
+    if (lastCompleted && (now - lastCompleted) < ONE_DAY) {
+      canDoTask = false;
+    }
 
     const div = document.createElement("div");
     div.style.margin = "15px 0";
@@ -72,15 +81,17 @@ async function loadTasks() {
         border-radius:6px;
         color:#fff;
         cursor:pointer;
-      ">
-      </button>
+      "></button>
     `;
 
     const btn = div.querySelector("button");
 
-    if (alreadyDone) {
-      btn.innerText = "✔ Already Completed";
-      btn.style.background = "#16a34a";
+    if (!canDoTask) {
+      const remaining = ONE_DAY - (now - lastCompleted);
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+
+      btn.innerText = `⏳ Try Again in ${hours}h`;
+      btn.style.background = "#999";
       btn.disabled = true;
     } else {
       btn.innerText = "Complete Task";
@@ -92,7 +103,7 @@ async function loadTasks() {
   });
 }
 
-/* 💰 COMPLETE TASK */
+/* COMPLETE TASK */
 async function completeTask(taskId, reward, btn) {
   const user = auth.currentUser;
   if (!user) return;
@@ -112,13 +123,7 @@ async function completeTask(taskId, reward, btn) {
     completedTasks = snap.val().completedTasks || {};
   }
 
-  if (completedTasks[taskId]) {
-    btn.innerText = "✔ Already Completed";
-    btn.style.background = "#16a34a";
-    return;
-  }
-
-  completedTasks[taskId] = true;
+  completedTasks[taskId] = Date.now();
 
   await update(userRef, {
     balance: balance + reward,
@@ -135,7 +140,7 @@ async function completeTask(taskId, reward, btn) {
   }, 1200);
 }
 
-/* 🪙 COIN POPUP */
+/* COIN POPUP */
 function showCoinPopup(amount) {
   const popup = document.createElement("div");
   popup.innerText = "🪙 +₹" + amount;
