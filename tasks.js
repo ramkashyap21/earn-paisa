@@ -27,17 +27,20 @@ onAuthStateChanged(auth, async(user)=>{
   const tasksSnap = await get(ref(db,"tasks"));
   const userSnap = await get(ref(db,"users/"+user.uid));
 
-  if(!tasksSnap.exists()) return;
+  if(!tasksSnap.exists()) {
+    tasksDiv.innerHTML = "<p>No Tasks Available</p>";
+    return;
+  }
 
   const userData = userSnap.val() || {};
   const completed = userData.completedTasks || {};
+  const currentBalance = userData.balance || 0;
 
   tasksDiv.innerHTML = "";
 
   tasksSnap.forEach(task=>{
     const taskId = task.key;
     const data = task.val();
-
     const isDone = completed[taskId];
 
     const card = document.createElement("div");
@@ -47,41 +50,37 @@ onAuthStateChanged(auth, async(user)=>{
     card.style.borderRadius="10px";
     card.style.boxShadow="0 2px 8px rgba(0,0,0,.1)";
 
+    const btn = document.createElement("button");
+    btn.style.padding="8px";
+    btn.style.border="none";
+    btn.style.borderRadius="6px";
+    btn.style.color="#fff";
+
+    if(isDone){
+      btn.innerText = "Completed";
+      btn.style.background = "gray";
+      btn.disabled = true;
+    } else {
+      btn.innerText = "Complete Task";
+      btn.style.background = "#22c55e";
+
+      btn.addEventListener("click", async()=>{
+        await update(ref(db,"users/"+user.uid),{
+          ["completedTasks/"+taskId]: true,
+          balance: currentBalance + data.reward
+        });
+
+        alert("₹"+data.reward+" Added!");
+        location.reload();
+      });
+    }
+
     card.innerHTML = `
       <h4>${data.title}</h4>
       <p>Reward: ₹${data.reward}</p>
-      ${
-        isDone
-        ? "<button disabled style='background:gray;color:#fff;padding:8px;border:none;border-radius:6px'>Completed</button>"
-        : `<button onclick="completeTask('${taskId}',${data.reward})"
-           style="background:#22c55e;color:#fff;padding:8px;border:none;border-radius:6px">
-           Complete Task
-           </button>`
-      }
     `;
 
+    card.appendChild(btn);
     tasksDiv.appendChild(card);
   });
 });
-
-window.completeTask = async function(taskId,reward){
-  const user = auth.currentUser;
-  if(!user) return;
-
-  const userRef = ref(db,"users/"+user.uid);
-
-  await update(userRef,{
-    ["completedTasks/"+taskId]: true
-  });
-
-  const snap = await get(userRef);
-  const currentBalance = snap.val().balance || 0;
-
-  await update(userRef,{
-    balance: currentBalance + reward
-  });
-
-  alert("Task Completed! ₹"+reward+" Added");
-
-  location.reload();
-};
