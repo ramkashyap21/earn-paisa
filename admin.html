@@ -55,13 +55,11 @@ header p{
   color:#22c55e;
 }
 
-/* Analytics */
 .analytics p{
   margin:8px 0;
   font-size:15px;
 }
 
-/* Table */
 .table{
   width:100%;
   border-collapse:collapse;
@@ -104,7 +102,6 @@ header p{
   width:100%;
 }
 
-/* Status badges */
 .status{
   padding:4px 10px;
   border-radius:6px;
@@ -113,10 +110,10 @@ header p{
 }
 
 .pending{background:#eab308;color:#000}
+.processing{background:#3b82f6;color:#fff}
 .approved{background:#22c55e;color:#000}
 .rejected{background:#ef4444;color:#fff}
 
-/* Responsive */
 @media(max-width:768px){
   .table th,.table td{
     font-size:12px;
@@ -135,7 +132,6 @@ header p{
 
 <div class="container">
 
-  <!-- Analytics -->
   <div class="card analytics">
     <h3>📊 Platform Analytics</h3>
     <p>Total Users: <b id="totalUsers">0</b></p>
@@ -145,7 +141,6 @@ header p{
     <p>Rejected Withdraw: ₹ <b id="rejectedWithdraw">0</b></p>
   </div>
 
-  <!-- Withdraw Table -->
   <div class="card">
     <h3>💸 Withdraw Requests</h3>
     <table class="table">
@@ -168,4 +163,4 @@ header p{
 
 <script type="module" src="admin.js"></script>
 </body>
-</html>
+                                       </html>
