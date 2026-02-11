@@ -1,12 +1,12 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from 
-"https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { 
   getDatabase, 
   ref, 
   get, 
+  set, 
   update 
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBc_f9XBgUi3HMpFQU40fWJdzxscfV826s",
@@ -16,71 +16,126 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getDatabase(app);
+const auth = getAuth(app);
 
-const tasksDiv = document.getElementById("tasks");
+const tasksContainer = document.getElementById("tasks");
 
-onAuthStateChanged(auth, async(user)=>{
-  if(!user) return;
+/* 🔥 AUTO SEED */
+async function seedTasksIfEmpty() {
+  const snap = await get(ref(db, "tasks"));
+  if (!snap.exists()) {
+    await set(ref(db, "tasks"), {
+      task1: { title: "Visit Website", reward: 10, active: true },
+      task2: { title: "Download App", reward: 20, active: true },
+      task3: { title: "Watch Video", reward: 5, active: true }
+    });
+  }
+}
 
-  const tasksSnap = await get(ref(db,"tasks"));
-  const userSnap = await get(ref(db,"users/"+user.uid));
+/* 📊 LOAD TASKS */
+async function loadTasks() {
+  await seedTasksIfEmpty();
 
-  if(!tasksSnap.exists()) {
-    tasksDiv.innerHTML = "<p>No Tasks Available</p>";
+  const snap = await get(ref(db, "tasks"));
+  if (!snap.exists()) {
+    tasksContainer.innerHTML = "No Tasks Available";
     return;
   }
 
-  const userData = userSnap.val() || {};
-  const completed = userData.completedTasks || {};
-  const currentBalance = userData.balance || 0;
+  tasksContainer.innerHTML = "";
 
-  tasksDiv.innerHTML = "";
+  snap.forEach(child => {
+    const task = child.val();
+    if (!task.active) return;
 
-  tasksSnap.forEach(task=>{
-    const taskId = task.key;
-    const data = task.val();
-    const isDone = completed[taskId];
+    const div = document.createElement("div");
+    div.style.margin = "15px 0";
+    div.style.padding = "15px";
+    div.style.background = "#f9fafb";
+    div.style.borderRadius = "10px";
+    div.style.boxShadow = "0 2px 8px rgba(0,0,0,0.05)";
 
-    const card = document.createElement("div");
-    card.style.background="#fff";
-    card.style.padding="15px";
-    card.style.margin="10px 0";
-    card.style.borderRadius="10px";
-    card.style.boxShadow="0 2px 8px rgba(0,0,0,.1)";
-
-    const btn = document.createElement("button");
-    btn.style.padding="8px";
-    btn.style.border="none";
-    btn.style.borderRadius="6px";
-    btn.style.color="#fff";
-
-    if(isDone){
-      btn.innerText = "Completed";
-      btn.style.background = "gray";
-      btn.disabled = true;
-    } else {
-      btn.innerText = "Complete Task";
-      btn.style.background = "#22c55e";
-
-      btn.addEventListener("click", async()=>{
-        await update(ref(db,"users/"+user.uid),{
-          ["completedTasks/"+taskId]: true,
-          balance: currentBalance + data.reward
-        });
-
-        alert("₹"+data.reward+" Added!");
-        location.reload();
-      });
-    }
-
-    card.innerHTML = `
-      <h4>${data.title}</h4>
-      <p>Reward: ₹${data.reward}</p>
+    div.innerHTML = `
+      <p style="font-weight:bold">${task.title}</p>
+      <p>Reward: ₹${task.reward}</p>
+      <button style="
+        padding:10px 18px;
+        background:#22c55e;
+        border:none;
+        color:#fff;
+        border-radius:6px;
+        cursor:pointer;
+        transition:0.3s;
+      ">Complete Task</button>
     `;
 
-    card.appendChild(btn);
-    tasksDiv.appendChild(card);
+    const btn = div.querySelector("button");
+
+    btn.onclick = () => completeTask(child.key, task.reward, btn);
+
+    tasksContainer.appendChild(div);
   });
-});
+}
+
+/* 💰 COMPLETE TASK WITH ANIMATION */
+async function completeTask(taskId, reward, btn) {
+  const user = auth.currentUser;
+  if (!user) return alert("Login required");
+
+  btn.disabled = true;
+  btn.innerText = "Processing...";
+  btn.style.background = "#999";
+
+  const userRef = ref(db, "users/" + user.uid);
+  const snap = await get(userRef);
+  let balance = 0;
+
+  if (snap.exists()) {
+    balance = snap.val().balance || 0;
+  }
+
+  await update(userRef, {
+    balance: balance + reward
+  });
+
+  // 🎉 SUCCESS ANIMATION
+  btn.innerText = "✔ Completed";
+  btn.style.background = "#16a34a";
+
+  showCoinPopup(reward);
+
+  setTimeout(() => {
+    location.reload();
+  }, 1500);
+}
+
+/* 🪙 COIN POPUP */
+function showCoinPopup(amount) {
+  const popup = document.createElement("div");
+  popup.innerText = "🪙 +₹" + amount;
+  popup.style.position = "fixed";
+  popup.style.top = "50%";
+  popup.style.left = "50%";
+  popup.style.transform = "translate(-50%,-50%) scale(0)";
+  popup.style.background = "#22c55e";
+  popup.style.color = "#fff";
+  popup.style.padding = "20px 40px";
+  popup.style.borderRadius = "15px";
+  popup.style.fontSize = "22px";
+  popup.style.fontWeight = "bold";
+  popup.style.transition = "0.4s";
+  popup.style.zIndex = "9999";
+
+  document.body.appendChild(popup);
+
+  setTimeout(() => {
+    popup.style.transform = "translate(-50%,-50%) scale(1)";
+  }, 50);
+
+  setTimeout(() => {
+    popup.remove();
+  }, 1200);
+}
+
+loadTasks();
