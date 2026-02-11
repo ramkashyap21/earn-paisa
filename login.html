@@ -39,6 +39,8 @@ button{
 p{text-align:center;font-size:14px}
 a{color:#22c55e;text-decoration:none}
 </style>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#22c55e">
 </head>
 
 <body>
@@ -105,7 +107,11 @@ onAuthStateChanged(auth,(user)=>{
     window.location.href="index.html";
   }
 });
-</script>
+  <script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+  </script>
 
 </body>
 </html>
