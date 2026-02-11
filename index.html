@@ -20,6 +20,8 @@ footer{background:#0f172a;color:#ccc;text-align:center;padding:20px;margin-top:4
 <body>
 
 <header>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#22c55e">
   <h1>Earn Paisa</h1>
   <p>Dashboard</p>
 </header>
@@ -95,6 +97,10 @@ window.logout = function(){
 <script type="module" src="wallet.js"></script>
 <script type="module" src="tasks.js"></script>
 <script type="module" src="withdraw.js"></script>
-
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+  </script>
 </body>
   </html>
